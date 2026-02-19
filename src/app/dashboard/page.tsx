@@ -4,8 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search, History, ArrowRight, Zap, Globe, Cpu } from "lucide-react";
 import { useSearch } from "@/context/SearchContext";
-import { WelcomeBanner } from "@/components/dashboard/WelcomeBanner";
-import { SupportBanner } from "@/components/dashboard/SupportBanner";
 import { motion } from "framer-motion";
 
 export default function Dashboard() {
@@ -41,13 +39,6 @@ export default function Dashboard() {
             animate={{ opacity: 1, y: 0 }}
             className="flex flex-col gap-20 py-10"
         >
-            <header className="flex flex-col gap-6">
-                <div className="flex items-center gap-3 bg-(--gold-tint-10) w-fit px-4 py-1.5 border border-(--gold-primary)/20">
-                    <Zap size={14} className="text-[#D4AF37]" />
-                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#D4AF37]">Active Intelligence Engine</span>
-                </div>
-                <WelcomeBanner />
-            </header>
 
             {/* Main Search Interface */}
             <section className="relative">
@@ -126,8 +117,6 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            {/* Support Section */}
-            <SupportBanner />
         </motion.div>
     );
 }
