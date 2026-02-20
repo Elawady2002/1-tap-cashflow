@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 
 interface Post {
     id: string;
@@ -48,16 +49,33 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     const [affiliateLink, setAffiliateLink] = useState("");
     const [history, setHistory] = useState<string[]>([]);
 
-    // Load history from localStorage on mount
+    // Load history from Supabase on mount
     useEffect(() => {
-        const saved = localStorage.getItem("replyradar_history");
-        if (saved) setHistory(JSON.parse(saved));
+        const fetchHistory = async () => {
+            const { data, error } = await supabase
+                .from("search_history")
+                .select("keyword")
+                .order("created_at", { ascending: false })
+                .limit(5);
+
+            if (!error && data) {
+                setHistory(data.map(item => item.keyword));
+            } else {
+                // Fallback to local storage if supabase fails or is empty
+                const saved = localStorage.getItem("onetap_history");
+                if (saved) setHistory(JSON.parse(saved));
+            }
+        };
+        fetchHistory();
     }, []);
 
-    const addToHistory = (k: string) => {
+    const addToHistory = async (k: string) => {
         const newHistory = [k, ...history.filter(h => h !== k)].slice(0, 5);
         setHistory(newHistory);
-        localStorage.setItem("replyradar_history", JSON.stringify(newHistory));
+        localStorage.setItem("onetap_history", JSON.stringify(newHistory));
+
+        // Persist to Supabase
+        await supabase.from("search_history").insert([{ keyword: k }]);
     };
 
     const resetSession = () => {

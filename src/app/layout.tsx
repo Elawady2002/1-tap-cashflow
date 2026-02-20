@@ -7,7 +7,7 @@ import { WelcomeBanner } from "@/components/dashboard/WelcomeBanner";
 import { Zap } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "ReplyRadar Pro | Executive Social Intelligence",
+  title: "1-Tap Cashflow Pro | Executive Social Intelligence",
   description: "High-end discussion discovery and AI response generation engine.",
 };
 

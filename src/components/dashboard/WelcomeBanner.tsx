@@ -19,7 +19,7 @@ export function WelcomeBanner() {
                     <div className="flex flex-col gap-2">
                         <h2 className="text-[32px] md:text-[42px] leading-tight font-bold text-white tracking-tight">
                             Welcome back to <br />
-                            <span className="text-accent glow-text">ReplyRadar Elite</span>
+                            <span className="text-accent glow-text">1-Tap Cashflow Elite</span>
                         </h2>
                         <p className="text-[#94A3B8] text-[16px] leading-relaxed max-w-md">
                             Watch this 3-minute tactical guide to master the art of viral comment marketing and launch your first campaign.

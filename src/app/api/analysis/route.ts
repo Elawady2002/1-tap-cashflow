@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { searchSocialData } from "@/lib/rapidapi";
 import { classifyActivity } from "@/lib/llm";
+import { supabase } from "@/lib/supabase";
 
 export async function POST(req: Request) {
     try {
@@ -13,6 +14,16 @@ export async function POST(req: Request) {
 
         // 2. Perform live AI analysis
         const analysis = await classifyActivity(keyword, sampleText);
+
+        // 3. Persist to Supabase
+        await supabase.from("analysis_results").insert([{
+            keyword,
+            data: {
+                level: analysis.level,
+                count: results.length,
+                classification: analysis.classification
+            }
+        }]);
 
         return NextResponse.json({
             level: analysis.level,

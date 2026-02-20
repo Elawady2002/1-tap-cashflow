@@ -25,7 +25,7 @@ export default function GeneratePage() {
                 { id: "demo-1", platform: "Reddit", text: "What really separates the top 1% of SaaS founders from the rest?", engagement: "450 Upvotes", score: 95, url: "#" },
                 { id: "demo-2", platform: "YouTube", text: "The unspoken truth about scaling your agency to $50k/mo.", engagement: "12K Views", score: 98, url: "#" }
             ];
-            targetLink = "https://replyradar.ai";
+            targetLink = "https://adradar.ai";
         }
 
         setCurrentPosts(targetPosts);
@@ -49,7 +49,7 @@ export default function GeneratePage() {
     };
 
     const handleRegenerate = () => {
-        generate(currentPosts, affiliateLink || "https://replyradar.ai");
+        generate(currentPosts, affiliateLink || "https://onetapcashflow.ai");
     };
 
     const handleCopy = (text: string, id: string) => {
