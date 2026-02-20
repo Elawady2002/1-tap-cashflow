@@ -146,7 +146,7 @@ export default function SignupPage() {
                             <span className="relative z-10 flex items-center justify-center gap-2">
                                 {loading ? "Deploying..." : (
                                     <>
-                                        Deploy Operator
+                                        Sign Up
                                         <UserPlus size={18} />
                                     </>
                                 )}
@@ -160,7 +160,7 @@ export default function SignupPage() {
                             href="/login"
                             className="text-[#D4AF37] text-[11px] font-black uppercase tracking-[0.2em] hover:text-white transition-colors"
                         >
-                            Return to Terminal
+                            Log In
                         </Link>
                     </div>
                 </div>

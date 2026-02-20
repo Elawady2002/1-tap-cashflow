@@ -135,7 +135,7 @@ export default function LoginPage() {
                             <span className="relative z-10 flex items-center justify-center gap-2">
                                 {loading ? "Authorizing..." : (
                                     <>
-                                        Authorize Session
+                                        Log In
                                         <LogIn size={18} />
                                     </>
                                 )}
@@ -149,7 +149,7 @@ export default function LoginPage() {
                             href="/signup"
                             className="text-[#D4AF37] text-[11px] font-black uppercase tracking-[0.2em] hover:text-white transition-colors"
                         >
-                            Establish Credentials
+                            Sign Up
                         </Link>
                     </div>
                 </div>

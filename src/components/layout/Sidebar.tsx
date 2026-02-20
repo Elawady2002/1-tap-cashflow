@@ -40,7 +40,7 @@ export function Sidebar() {
                 />
             </div>
 
-            <div className="flex flex-col p-10 gap-16 relative z-10 h-full">
+            <div className="flex flex-col p-6 gap-10 relative z-10 h-full">
                 {/* Elite Logo */}
                 <Link href="/dashboard" className="flex items-center gap-4 group">
                     <div className="w-10 h-10 bg-accent flex items-center justify-center rounded-sm">
