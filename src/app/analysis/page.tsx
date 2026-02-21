@@ -172,7 +172,7 @@ export default function AnalysisPage() {
                                     <motion.div
                                         initial={{ height: 0, opacity: 0 }}
                                         animate={{ height: "auto", opacity: 1 }}
-                                        className="flex flex-col gap-3 p-6 bg-sidebar/40 rounded-[2rem] border border-accent/20 shadow-inner"
+                                        className="flex flex-col gap-3 p-6 bg-sidebar/40 rounded-4xl border border-accent/20 shadow-inner"
                                     >
                                         <h4 className="text-[10px] font-bold text-accent uppercase tracking-widest mb-2 px-1 opacity-80">Niche Variations</h4>
                                         {loadingVariations ? (
@@ -209,7 +209,7 @@ export default function AnalysisPage() {
                                                 })}
                                             </div>
                                         ) : (
-                                            <div className="text-xs text-text-muted p-8 bg-page/20 rounded-[1.5rem] text-center italic border border-dashed border-border-dim/30">
+                                            <div className="text-xs text-text-muted p-8 bg-page/20 rounded-3xl text-center italic border border-dashed border-border-dim/30">
                                                 No variations found.
                                             </div>
                                         )}
@@ -334,14 +334,12 @@ export default function AnalysisPage() {
             </section>
 
             {/* SECTION 3: REWARD & ACTION (Bottom Bar) */}
-            <section className="pt-12">
-                <div className="flex flex-col lg:flex-row justify-between items-center bg-surface/60 border-2 border-accent/10 rounded-[3rem] p-10 lg:p-14 gap-12 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] relative overflow-hidden group backdrop-blur-xl">
-                    <div className="absolute inset-0 bg-gradient-to-br from-accent/[0.03] to-transparent pointer-events-none" />
-                    <div className="absolute -bottom-48 -left-48 w-96 h-96 bg-accent/5 blur-[120px] rounded-full pointer-events-none" />
-                    <div className="absolute -top-48 -right-48 w-96 h-96 bg-accent/5 blur-[120px] rounded-full pointer-events-none group-hover:bg-accent/10 transition-colors duration-1000" />
+            <section className="pt-6">
+                <div className="flex flex-col lg:flex-row justify-between items-center bg-surface/40 border border-border-dim/30 rounded-[3rem] p-10 lg:p-14 gap-12 shadow-xl relative overflow-hidden group backdrop-blur-md">
+
 
                     <div className="flex flex-col md:flex-row items-center gap-12 relative z-10 text-center md:text-left">
-                        <div className="w-20 h-20 rounded-[2rem] bg-brand-tint border-2 border-accent/20 flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-700">
+                        <div className="w-20 h-20 rounded-4xl bg-brand-tint border-2 border-accent/10 flex items-center justify-center shadow-xl group-hover:scale-105 transition-all duration-700">
                             <Share2 size={32} className="text-accent" />
                         </div>
                         <div className="flex flex-col gap-2">
@@ -353,14 +351,14 @@ export default function AnalysisPage() {
                     <div className="flex flex-col sm:flex-row items-center gap-8 relative z-10 w-full lg:w-auto">
                         <button
                             onClick={() => router.push("/radar")}
-                            className="w-full sm:w-auto px-10 h-16 rounded-[1.25rem] border-2 border-border-dim text-text-secondary hover:bg-surface-lighter hover:text-text-primary hover:border-accent/40 transition-all text-lg font-black tracking-tight shadow-lg whitespace-nowrap"
+                            className="w-full sm:w-auto px-10 h-16 rounded-3xl border-2 border-border-dim text-text-secondary hover:bg-surface-lighter hover:text-text-primary hover:border-accent/40 transition-all text-lg font-black tracking-tight shadow-lg whitespace-nowrap"
                         >
                             Back to Variations
                         </button>
                         <button
                             onClick={handleContinue}
                             disabled={loading || !analysis}
-                            className="w-full sm:w-auto btn-primary min-w-[300px] h-20 rounded-[1.5rem] text-xl font-black tracking-tight shadow-[0_25px_60px_-10px_rgba(234,179,8,0.5)] hover:shadow-[0_35px_80px_-10px_rgba(234,179,8,0.7)] hover:-translate-y-2 transition-all duration-500"
+                            className="w-full sm:w-auto btn-primary min-w-[300px] h-20 rounded-3xl text-xl font-black tracking-tight shadow-xl hover:-translate-y-1 transition-all duration-500"
                         >
                             {loading ? (
                                 <div className="flex items-center justify-center gap-4">
