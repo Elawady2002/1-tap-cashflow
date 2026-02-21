@@ -11,43 +11,46 @@ export async function POST(req: Request) {
         console.log(">>> [API/ANALYSIS] Keyword:", keyword);
         if (!keyword) return NextResponse.json({ error: "Keyword required" }, { status: 400 });
 
+        // 0. Check for existing analysis in Supabase (Cache)
+        const { data: existingAnalysis, error: fetchError } = await supabase
+            .from("analysis_results")
+            .select("data")
+            .eq("keyword", keyword)
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .single();
+
+        if (existingAnalysis) {
+            console.log(">>> [API/ANALYSIS] Using Cached Analysis Results");
+            return NextResponse.json(existingAnalysis.data);
+        }
+
         // 1. Fetch live social data
         const results = await searchSocialData(keyword);
         const sampleText = results.slice(0, 10).map(r => r.text).join("\n");
 
         // 2. Perform live AI analysis
         const analysis = await classifyActivity(keyword, sampleText);
+        const analysisData = {
+            level: analysis.level,
+            count: results.length,
+            classification: analysis.classification
+        };
 
         // 3. Persist to Supabase
         const { error: dbError } = await supabase.from("analysis_results").insert([{
             keyword,
-            data: {
-                level: analysis.level,
-                count: results.length,
-                classification: analysis.classification
-            }
+            data: analysisData
         }]);
 
         if (dbError) console.error("Supabase Persistence Error (analysis_results):", dbError);
 
-        return NextResponse.json({
-            level: analysis.level,
-            count: results.length,
-            classification: analysis.classification
-        });
+        return NextResponse.json(analysisData);
     } catch (error: any) {
-        console.error("Analysis Error (Falling back to Mock Data):", error);
-
-        // Return High-Quality Mock Data for Demo/Fallback
-        return NextResponse.json({
-            level: "High Activity",
-            count: Math.floor(Math.random() * (5000 - 1000) + 1000), // Random count between 1000-5000
-            classification: `Analysis indicates a highly active discussion vector for this topic. 
-            
-            Semantic intent is focused on "Solution Seeking" and "Comparative Analysis". Users are actively requesting specific features and pricing tiers.
-            
-            Recommendation: Engage with value-proposition based replies.`,
-            warning: "Displaying simulated data due to a processing error."
-        });
+        console.error("Analysis Error:", error);
+        return NextResponse.json(
+            { error: error.message || "Market analysis failed. Please try again." },
+            { status: 500 }
+        );
     }
 }

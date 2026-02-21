@@ -88,25 +88,27 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
 
     // Save current search state to local storage for persistence on refresh
     useEffect(() => {
-        if (variations.length > 0 || selectedKeyword) {
+        if (variations.length > 0 || selectedKeyword || analysis) {
             const searchState = {
                 variations,
                 selectedKeyword,
-                keyword
+                keyword,
+                analysis
             };
             localStorage.setItem("onetap_current_search", JSON.stringify(searchState));
         }
-    }, [variations, selectedKeyword, keyword]);
+    }, [variations, selectedKeyword, keyword, analysis]);
 
     // Load current search state on mount
     useEffect(() => {
         const savedState = localStorage.getItem("onetap_current_search");
         if (savedState) {
             try {
-                const { variations: v, selectedKeyword: sk, keyword: k } = JSON.parse(savedState);
+                const { variations: v, selectedKeyword: sk, keyword: k, analysis: a } = JSON.parse(savedState);
                 if (v) setVariations(v);
                 if (sk) setSelectedKeyword(sk);
                 if (k) setKeyword(k);
+                if (a) setAnalysis(a);
             } catch (e) {
                 console.error("Failed to parse saved search state:", e);
             }
