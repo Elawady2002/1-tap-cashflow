@@ -46,7 +46,7 @@ export default function DFYPage() {
                             <span className="text-[#D4AF37] glow-text">You collect the results.</span>
                         </h2>
                         <p className="text-[#94A3B8] text-[18px] leading-relaxed">
-                            Stop spending time on research and configuration. Our team of Elite specialists will handle the heavy lifting, from finding your perfect social niches to crafting the perfect AI personas.
+                            Stop spending time on research and configuration. Our team of Pro specialists will handle the heavy lifting, from finding your perfect social niches to crafting the perfect AI personas.
                         </p>
                     </div>
 
@@ -66,7 +66,7 @@ export default function DFYPage() {
                     </div>
 
                     <div className="flex items-center gap-6 mt-4">
-                        <button className="elite-btn px-10 group">
+                        <button className="btn-primary px-10 group">
                             <span>Request Activation</span>
                             <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                         </button>
@@ -81,7 +81,7 @@ export default function DFYPage() {
                     <div className="glass-card p-1 bg-linear-to-br from-[#141414] to-black border-[#222] shadow-2xl relative z-10">
                         <img
                             src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2000&auto=format&fit=crop"
-                            alt="Elite Team"
+                            alt="Pro Team"
                             className="rounded-lg opacity-80"
                         />
                         <div className="absolute inset-0 bg-linear-to-t from-black/80 to-transparent flex flex-col justify-end p-10">

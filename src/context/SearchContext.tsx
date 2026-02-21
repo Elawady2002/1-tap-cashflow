@@ -7,8 +7,9 @@ interface Post {
     id: string;
     platform: string;
     text: string;
+    title?: string;
     url: string;
-    engagement: number;
+    engagement: string | number;
 }
 
 interface AnalysisData {
@@ -32,6 +33,8 @@ interface SearchContextType {
     setResults: (r: Post[]) => void;
     affiliateLink: string;
     setAffiliateLink: (l: string) => void;
+    replies: any[];
+    setReplies: (r: any[]) => void;
     history: string[];
     addToHistory: (k: string) => void;
     resetSession: () => void;
@@ -47,6 +50,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     const [selectedPosts, setSelectedPosts] = useState<Post[]>([]);
     const [results, setResults] = useState<Post[]>([]);
     const [affiliateLink, setAffiliateLink] = useState("");
+    const [replies, setReplies] = useState<any[]>([]);
     const [history, setHistory] = useState<string[]>([]);
 
     // Load history from Supabase on mount
@@ -86,6 +90,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
         setSelectedPosts([]);
         setResults([]);
         setAffiliateLink("");
+        setReplies([]);
         setHistory([]);
         localStorage.removeItem("onetap_history");
         await supabase.auth.signOut();
@@ -101,6 +106,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
             selectedPosts, setSelectedPosts,
             results, setResults,
             affiliateLink, setAffiliateLink,
+            replies, setReplies,
             history, addToHistory,
             resetSession
         }}>

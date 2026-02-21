@@ -6,7 +6,7 @@ import { Play, Clock, ChevronRight, GraduationCap, Sparkles, Youtube, BookOpen }
 const VIDEOS = [
     {
         id: "v1",
-        title: "Mastering the Neural Hub",
+        title: "Mastering the Personalised Replies",
         description: "Learn how to use tactical writing output to maximize engagement and conversion rates.",
         duration: "03:45",
         category: "Basics",
@@ -38,7 +38,7 @@ const VIDEOS = [
     },
     {
         id: "v5",
-        title: "Elite Pipeline Integration",
+        title: "Pro Pipeline Integration",
         description: "Best practices for integrating 1-Tap Cashflow AI outputs into your existing CRM and sales flow.",
         duration: "06:10",
         category: "Enterprise",
@@ -152,7 +152,7 @@ export default function TrainingPage() {
                             </p>
                         </div>
                     </div>
-                    <button className="elite-btn-outline whitespace-nowrap px-10">
+                    <button className="btn-primary-outline whitespace-nowrap px-10">
                         Access Documentation
                     </button>
                 </div>

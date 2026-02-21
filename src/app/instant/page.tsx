@@ -6,7 +6,7 @@ import { Zap, TrendingUp, Clock, Rocket, Activity } from "lucide-react";
 const SPEED_METRICS = [
     { label: "Discovery Speed", basic: "140ms", elite: "12ms", boost: "10x" },
     { label: "AI Synthesis", basic: "2.4s", elite: "0.4s", boost: "6x" },
-    { label: "Crawler Depth", basic: "Tier 1", elite: "Tier 4", boost: "Elite" }
+    { label: "Crawler Depth", basic: "Tier 1", elite: "Tier 4", boost: "Pro" }
 ];
 
 export default function InstantIncomePage() {
@@ -76,7 +76,7 @@ export default function InstantIncomePage() {
                 <div className="flex flex-col gap-8">
                     <div className="glass-card border-[#D4AF37]/20 p-8 flex flex-col gap-8 bg-linear-to-b from-[#141414] to-black">
                         <div className="flex flex-col gap-2">
-                            <span className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.4em]">Elite Protocol</span>
+                            <span className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.4em]">Pro Protocol</span>
                             <h3 className="text-[20px] font-bold text-white leading-tight">Zero-Lag Activation</h3>
                         </div>
                         <ul className="flex flex-col gap-4">
@@ -93,7 +93,7 @@ export default function InstantIncomePage() {
                                 <span>Priority GPU processing</span>
                             </li>
                         </ul>
-                        <button className="elite-btn w-full mt-4">
+                        <button className="btn-primary w-full mt-4">
                             Unlock Instant Mode
                         </button>
                     </div>

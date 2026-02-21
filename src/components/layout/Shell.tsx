@@ -21,13 +21,12 @@ export function Shell({ children }: { children: React.ReactNode }) {
             <main className="flex-1 overflow-y-auto scroll-smooth relative">
                 <div className="px-16 pt-10 pb-16 max-w-7xl mx-auto min-h-full flex flex-col">
                     <GlobalPromotionBanner />
-                    <header className="flex flex-col gap-6 mb-20">
-                        <div className="flex items-center gap-3 bg-(--gold-tint-10) w-fit px-4 py-1.5 border border-(--gold-primary)/20">
-                            <Zap size={14} className="text-[#D4AF37]" />
-                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#D4AF37]">Active Intelligence Engine</span>
+
+                    {pathname === "/dashboard" && (
+                        <div className="mb-12">
+                            <WelcomeBanner />
                         </div>
-                        {pathname === "/dashboard" && <WelcomeBanner />}
-                    </header>
+                    )}
                     {children}
                     <div className="mt-20">
                         <SupportBanner />

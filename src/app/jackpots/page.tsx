@@ -1,14 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Trophy, ArrowLeft, MessageSquare, ExternalLink, Filter, CheckCircle2, Link as LinkIcon, AlertCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, Hash, Link as LinkIcon, MessageSquare, Target, CheckCircle2, AlertCircle, ExternalLink } from "lucide-react";
 import { useSearch } from "@/context/SearchContext";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { clsx } from "clsx";
 
 export default function JackpotsPage() {
-    const { results, selectedPosts, setSelectedPosts, selectedKeyword, affiliateLink, setAffiliateLink } = useSearch();
+    const { results, selectedPosts, setSelectedPosts, selectedKeyword, affiliateLink, setAffiliateLink, setReplies } = useSearch();
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
@@ -28,154 +28,184 @@ export default function JackpotsPage() {
         }
     };
 
-    const handleContinue = () => {
+    const handleContinue = async () => {
         if (selectedPosts.length === 0) return;
-        router.push("/generate");
+        setLoading(true);
+        try {
+            const resp = await fetch("/api/generate", {
+                method: "POST",
+                body: JSON.stringify({
+                    results: selectedPosts,
+                    affiliateLink
+                })
+            });
+            const data = await resp.json();
+            setReplies(data.replies || []);
+            router.push("/generate");
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <motion.div
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex flex-col gap-12 py-10"
+            className="flex flex-col gap-10"
         >
-            <header className="flex flex-col gap-6">
-                <button
-                    onClick={() => router.back()}
-                    className="flex items-center gap-2 text-[#475569] hover:text-[#D4AF37] transition-all text-[10px] font-black uppercase tracking-[0.3em]"
-                >
-                    <ArrowLeft size={14} /> Intelligence Re-Entry
-                </button>
-                <div className="flex items-center gap-5">
-                    <div className="w-16 h-16 bg-[#D4AF37]/10 border border-[#D4AF37]/20 flex items-center justify-center rounded-sm">
-                        <Trophy size={32} className="text-[#D4AF37]" />
-                    </div>
-                    <div className="flex flex-col">
-                        <h1 className="text-[48px] text-white leading-tight">Social Jackpots</h1>
-                        <span className="text-[10px] font-black tracking-[0.4em] uppercase text-[#D4AF37]">Candidate Sourcing</span>
-                    </div>
+            <header className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
+                    <h1 className="text-4xl text-text-primary">Targeted Discussions</h1>
+                    <p className="subtitle">
+                        Identified <span className="text-text-primary font-bold">{results.length} high-value threads</span> for <span className="text-text-primary font-bold">"{selectedKeyword}"</span>.
+                    </p>
                 </div>
-                <p className="text-[#94A3B8] text-[16px] max-w-2xl leading-relaxed">
-                    High-potential conversations found for <span className="text-white font-bold">[{selectedKeyword}]</span>. Mark the targets where your engagement will have the highest yield.
-                </p>
             </header>
 
-            {/* Modern Table Container */}
-            <div className="glass-card p-0! overflow-hidden border-[#141414]">
-                <div className="flex items-center justify-between p-8 bg-black/40 border-b border-[#141414]">
-                    <div className="flex items-center gap-6">
-                        <div className="flex items-center gap-3">
-                            <Filter size={16} className="text-[#D4AF37]" />
-                            <span className="text-[12px] font-black tracking-[0.2em] uppercase text-white">Target Feed</span>
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                {/* Affiliate Link Config */}
+                <div className="lg:col-span-1 flex flex-col gap-6">
+                    <div className="card-base bg-brand-tint border-accent/10 flex flex-col gap-6">
+                        <div className="flex items-center gap-2">
+                            <Target size={18} className="text-accent" />
+                            <h3 className="text-lg font-bold text-text-primary">Engagement Link</h3>
                         </div>
-                        <div className="h-6 w-px bg-[#141414]"></div>
-                        <button
-                            onClick={handleSelectAll}
-                            className="text-[10px] font-black uppercase tracking-widest text-[#475569] hover:text-white transition-all"
-                        >
-                            {selectedPosts.length === results.length ? "Deselect All" : "Select All Candidates"}
-                        </button>
+                        <p className="text-xs text-text-secondary leading-relaxed">
+                            This link will be naturally woven into the generated responses where appropriate.
+                        </p>
+                        <div className="relative group">
+                            <LinkIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-accent" />
+                            <input
+                                type="text"
+                                placeholder="https://your-link.com"
+                                className="input-base w-full pl-10 text-sm"
+                                value={affiliateLink}
+                                onChange={(e) => setAffiliateLink(e.target.value)}
+                            />
+                        </div>
+                        {affiliateLink && (
+                            <div className="flex items-center gap-2 text-success text-[10px] font-bold uppercase tracking-wider">
+                                <CheckCircle2 size={12} />
+                                <span>Link Configured</span>
+                            </div>
+                        )}
                     </div>
-                    <div className="flex items-center gap-4">
-                        <span className="text-[11px] text-[#475569] font-bold uppercase tracking-widest">{results.length} Discussions Isolated</span>
+
+                    <div className="card-base flex flex-col gap-4 border-dashed border-border-dim">
+                        <div className="flex items-center gap-2 text-text-muted">
+                            <AlertCircle size={16} />
+                            <h4 className="text-sm font-bold">Selection Rule</h4>
+                        </div>
+                        <p className="text-xs text-text-muted leading-relaxed">
+                            Select at least 1 discussion to proceed. Focus on threads that align with your product's unique selling points.
+                        </p>
                     </div>
                 </div>
 
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="bg-black/20 text-[10px] font-black uppercase tracking-[0.2em] text-[#475569]">
-                                <th className="px-10 py-6 w-20">Sel.</th>
-                                <th className="px-5 py-6 w-32">Vector</th>
-                                <th className="px-5 py-6">Intelligence Feed</th>
-                                <th className="px-5 py-6 w-32">Score</th>
-                                <th className="px-10 py-6 w-20"></th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-[#141414]">
-                            {results.map((post) => {
-                                const isSelected = !!selectedPosts.find(p => p.id === post.id);
-                                return (
-                                    <tr key={post.id} className={clsx("group transition-all duration-300", isSelected ? "bg-[#D4AF37]/3" : "hover:bg-white/2")}>
-                                        <td className="px-10 py-8">
-                                            <button
-                                                onClick={() => togglePost(post)}
-                                                className={clsx("w-6 h-6 border flex items-center justify-center transition-all",
-                                                    isSelected ? "bg-[#D4AF37] border-[#D4AF37]" : "border-[#141414] hover:border-[#D4AF37]/40"
-                                                )}
-                                            >
-                                                {isSelected && <CheckCircle2 size={14} className="text-black" />}
-                                            </button>
-                                        </td>
-                                        <td className="px-5 py-8">
-                                            <div className={clsx("text-[9px] font-black tracking-[0.25em] uppercase w-fit px-3 py-1.5 border leading-none",
-                                                post.platform === 'Reddit' ? "text-orange-400 border-orange-400/20 bg-orange-400/5 shadow-[0_0_10px_rgba(251,146,60,0.1)]" : "text-red-500 border-red-500/20 bg-red-500/5 shadow-[0_0_10px_rgba(239,68,68,0.1)]"
-                                            )}>
-                                                {post.platform}
-                                            </div>
-                                        </td>
-                                        <td className="px-5 py-8">
-                                            <p className="text-[15px] text-[#FFFFFF] line-clamp-2 leading-relaxed max-w-xl font-medium">
-                                                {post.text}
-                                            </p>
-                                        </td>
-                                        <td className="px-5 py-8">
-                                            <span className="text-[14px] text-white font-bold font-mono glow-text">{post.engagement}</span>
-                                        </td>
-                                        <td className="px-10 py-8">
-                                            <a href={post.url} target="_blank" className="text-[#475569] hover:text-[#D4AF37] opacity-0 group-hover:opacity-100 transition-all">
-                                                <ExternalLink size={16} />
-                                            </a>
+                {/* Discussions Table */}
+                <div className="lg:col-span-3 card-base overflow-hidden p-0!">
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="bg-surface border-b border-border-dim/50">
+                                    <th className="px-6 py-4 w-12">
+                                        <button
+                                            onClick={handleSelectAll}
+                                            className={clsx(
+                                                "w-5 h-5 rounded border flex items-center justify-center transition-all",
+                                                selectedPosts.length === results.length && results.length > 0
+                                                    ? "bg-accent border-accent text-black"
+                                                    : "bg-page border-border-dim hover:border-accent/50"
+                                            )}
+                                        >
+                                            {selectedPosts.length === results.length && results.length > 0 && <CheckCircle2 size={14} className="fill-current" />}
+                                        </button>
+                                    </th>
+                                    <th className="px-5 py-4 text-xs font-bold text-text-muted uppercase tracking-widest">Platform</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-text-muted uppercase tracking-widest">Discussion Content</th>
+                                    <th className="px-6 py-4 text-xs font-bold text-text-muted uppercase tracking-widest w-32">Index</th>
+                                    <th className="px-6 py-4 w-12"></th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-border-dim/30">
+                                {results.length > 0 ? results.map((r) => {
+                                    const isSelected = !!selectedPosts.find(p => p.id === r.id);
+                                    return (
+                                        <tr
+                                            key={r.id}
+                                            className={clsx(
+                                                "hover:bg-brand-tint/30 transition-colors cursor-pointer group",
+                                                isSelected && "bg-brand-tint/50"
+                                            )}
+                                            onClick={() => togglePost(r)}
+                                        >
+                                            <td className="px-6 py-4">
+                                                <div
+                                                    className={clsx(
+                                                        "w-5 h-5 rounded border flex items-center justify-center transition-all",
+                                                        isSelected
+                                                            ? "bg-accent border-accent text-black"
+                                                            : "bg-surface border-border-dim group-hover:border-accent/50"
+                                                    )}
+                                                >
+                                                    {isSelected && <CheckCircle2 size={14} className="fill-current" />}
+                                                </div>
+                                            </td>
+                                            <td className="px-5 py-4">
+                                                <div className={clsx(
+                                                    "text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-md border",
+                                                    r.platform === 'Reddit' ? "text-orange-400 border-orange-400/20 bg-orange-400/5" : "text-red-500 border-red-500/20 bg-red-500/5"
+                                                )}>
+                                                    {r.platform}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-6 font-medium">
+                                                <p className="text-text-primary text-[15px] leading-relaxed line-clamp-2">{r.text || r.title}</p>
+                                            </td>
+                                            <td className="px-6 py-6">
+                                                <span className="text-xs text-text-muted font-mono">#{r.id}</span>
+                                            </td>
+                                            <td className="px-6 py-6 text-right">
+                                                <a
+                                                    href={r.url}
+                                                    target="_blank"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-text-muted hover:text-accent hover:bg-accent/10 transition-all opacity-0 group-hover:opacity-100"
+                                                >
+                                                    <ExternalLink size={16} />
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    );
+                                }) : (
+                                    <tr>
+                                        <td colSpan={5} className="px-6 py-20 text-center">
+                                            <p className="text-text-muted">No discussions found. Please try a different keyword expansion.</p>
                                         </td>
                                     </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
-            {/* Global Actions Bar */}
-            <footer className="flex flex-col gap-10">
-                <div className="glass-card flex flex-col gap-6 bg-[#D4AF37]/2">
-                    <div className="flex items-center gap-3">
-                        <LinkIcon size={14} className="text-[#D4AF37]" />
-                        <label className="text-[10px] font-black tracking-[0.3em] uppercase text-white">Injection Payload (Affiliate/Target URL)</label>
-                    </div>
-                    <div className="flex gap-4">
-                        <input
-                            type="text"
-                            placeholder="Enter the destination URL for AI generation..."
-                            className="flex-1 bg-black/60 border border-[#141414] px-8 py-5 text-[16px] text-white outline-none focus:border-[#D4AF37] transition-all font-medium placeholder-[#475569]"
-                            value={affiliateLink}
-                            onChange={(e) => setAffiliateLink(e.target.value)}
-                        />
-                    </div>
-                    {!affiliateLink && (
-                        <div className="flex items-center gap-2 text-[#475569] text-[11px] font-medium tracking-tight">
-                            <AlertCircle size={12} />
-                            <span>AI will generate natural responses without a specific link if left blank.</span>
-                        </div>
-                    )}
+            <div className="flex flex-col md:flex-row justify-between items-center bg-surface border border-border-dim rounded-2xl p-8 gap-6 shadow-gold">
+                <div className="flex flex-col gap-1">
+                    <span className="text-xs font-bold text-text-muted uppercase tracking-widest">Active Selections</span>
+                    <span className="text-text-primary font-bold text-xl">{selectedPosts.length} Threads Ready</span>
                 </div>
-
-                <div className="bg-[#070707] border border-[#141414] p-10 flex justify-between items-center">
-                    <div className="flex flex-col gap-1">
-                        <span className="text-[10px] font-black tracking-[0.2em] uppercase text-[#475569]">Pipeline Ready</span>
-                        <div className="text-white text-[18px] font-bold">
-                            <span className="text-[#D4AF37] glow-text">{selectedPosts.length}</span> Targets Selected
-                        </div>
-                    </div>
-                    <button
-                        onClick={handleContinue}
-                        disabled={selectedPosts.length === 0}
-                        className="elite-btn min-w-[320px]"
-                    >
-                        Initiate Neural Writing
-                        <MessageSquare size={18} />
-                    </button>
-                </div>
-            </footer>
+                <button
+                    onClick={handleContinue}
+                    disabled={loading || selectedPosts.length === 0}
+                    className="btn-primary min-w-[320px] h-14"
+                >
+                    {loading ? "Generating Replies..." : "Generate AI Responses"}
+                    <ArrowRight size={20} />
+                </button>
+            </div>
         </motion.div>
     );
 }

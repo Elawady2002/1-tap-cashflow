@@ -29,111 +29,119 @@ export default function AnalysisPage() {
         }
     };
 
+    const getActivityColor = (level: string) => {
+        if (level === 'High Activity') return 'text-success';
+        if (level === 'Active') return 'text-accent';
+        return 'text-text-muted';
+    };
+
+    const getActivityBg = (level: string) => {
+        if (level === 'High Activity') return 'bg-success/20';
+        if (level === 'Active') return 'bg-accent/20';
+        return 'bg-border-dim/50';
+    };
+
     return (
         <motion.div
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex flex-col gap-16 py-10"
+            className="flex flex-col gap-10"
         >
-            <header className="flex flex-col gap-6">
-                <button
-                    onClick={() => router.back()}
-                    className="flex items-center gap-2 text-[#475569] hover:text-[#D4AF37] transition-all text-[10px] font-black uppercase tracking-[0.3em]"
-                >
-                    <ArrowLeft size={14} /> Back to Radar
-                </button>
-                <div className="flex items-center gap-5">
-                    <div className="w-16 h-16 bg-[#D4AF37]/10 border border-[#D4AF37]/20 flex items-center justify-center rounded-sm">
-                        <Activity size={32} className="text-[#D4AF37]" />
-                    </div>
-                    <div className="flex flex-col">
-                        <h1 className="text-[48px] text-white leading-tight">Market Intel</h1>
-                        <span className="text-[10px] font-black tracking-[0.4em] uppercase text-[#D4AF37]">Intelligence Extraction</span>
-                    </div>
+            <header className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
+                    <h1 className="text-4xl text-text-primary">Market Analysis</h1>
+                    <p className="subtitle">
+                        Market pulse for <span className="text-text-primary font-bold">"{selectedKeyword}"</span>. Insights into conversation volume and audience intent.
+                    </p>
                 </div>
-                <p className="text-[#94A3B8] text-[16px] max-w-2xl leading-relaxed">
-                    Deep structural analysis for <span className="text-white font-bold glow-text">[{selectedKeyword}]</span>. We've classified the market sentiment and conversation density.
-                </p>
             </header>
 
-            <div className="grid grid-cols-5 gap-8">
-                {/* Left Column - Large Stats */}
-                <div className="glass-card flex flex-col gap-10 col-span-3">
-                    <div className="flex items-center justify-between border-b border-[#141414] pb-6">
-                        <div className="flex items-center gap-3">
-                            <BarChart3 size={18} className="text-[#D4AF37]" />
-                            <span className="text-[12px] font-black tracking-[0.2em] uppercase text-white">Activity Density</span>
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                {/* Activity Density */}
+                <div className="card-base flex flex-col gap-8 lg:col-span-3">
+                    <div className="flex items-center justify-between border-b border-border-dim/50 pb-4">
+                        <div className="flex items-center gap-2">
+                            <BarChart3 size={18} className="text-accent" />
+                            <h3 className="text-lg">Activity Density</h3>
                         </div>
-                        <div className="px-3 py-1 bg-[#22C55E]/10 border border-[#22C55E]/20 text-[#22C55E] text-[10px] font-black tracking-widest uppercase">Live Scan</div>
+                        <span className="px-3 py-1 bg-brand-tint border border-accent/20 text-accent text-[10px] font-bold uppercase tracking-widest rounded-full">Live Data</span>
                     </div>
 
-                    <div className="flex items-end gap-10">
-                        <div className="flex flex-col gap-2">
-                            <span className="text-[64px] text-white font-bold leading-none tracking-tighter">{analysis?.level || "SCANNING"}</span>
-                            <span className="text-[12px] text-[#475569] font-bold uppercase tracking-[0.2em]">Platform Intensity</span>
-                        </div>
-                        <div className="flex-1 pb-4">
-                            <div className="h-2 w-full bg-[#141414] rounded-full overflow-hidden">
-                                <motion.div
-                                    initial={{ width: 0 }}
-                                    animate={{ width: analysis?.level === 'High Activity' ? '100%' : analysis?.level === 'Active' ? '65%' : '25%' }}
-                                    className="h-full bg-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.4)]"
-                                    transition={{ duration: 1.5, ease: "circOut" }}
-                                />
+                    <div className="flex flex-col gap-6">
+                        <div className="flex items-end justify-between">
+                            <div className="flex flex-col">
+                                <span className={clsx("text-5xl font-bold leading-tight", getActivityColor(analysis?.level || ''))}>
+                                    {analysis?.level || "SCANNING..."}
+                                </span>
+                                <span className="text-xs font-bold text-text-muted uppercase tracking-widest mt-1">Platform Engagement intensity</span>
                             </div>
                         </div>
+
+                        <div className="h-3 w-full bg-page rounded-full overflow-hidden border border-border-dim">
+                            <motion.div
+                                initial={{ width: 0 }}
+                                animate={{ width: analysis?.level === 'High Activity' ? '100%' : analysis?.level === 'Active' ? '65%' : '25%' }}
+                                className={clsx("h-full transition-all duration-1000",
+                                    analysis?.level === 'High Activity' ? 'bg-success shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-accent shadow-gold'
+                                )}
+                            />
+                        </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-8 border-t border-[#141414] pt-8">
-                        <div className="flex flex-col gap-2">
-                            <span className="text-[10px] text-[#475569] font-black uppercase tracking-widest">Raw Hits</span>
-                            <span className="text-[24px] text-white font-bold">{analysis?.count || 0}</span>
-                            <span className="text-[11px] text-[#94A3B8]">Unique discussions sourced.</span>
+                    <div className="grid grid-cols-2 gap-6 pt-6 border-t border-border-dim/50">
+                        <div className="flex flex-col gap-1">
+                            <span className="text-xs text-text-muted font-bold uppercase tracking-widest">Total Discussions</span>
+                            <span className="text-2xl text-text-primary font-bold">{analysis?.count || 0}</span>
+                            <span className="text-xs text-text-muted italic">Within the last 7 days.</span>
                         </div>
-                        <div className="flex flex-col gap-2">
-                            <span className="text-[10px] text-[#475569] font-black uppercase tracking-widest">Time Buffer</span>
-                            <span className="text-[24px] text-white font-bold">168 Hours</span>
-                            <span className="text-[11px] text-[#94A3B8]">Current lookback window.</span>
+                        <div className="flex flex-col gap-1">
+                            <span className="text-xs text-text-muted font-bold uppercase tracking-widest">Analysis Range</span>
+                            <span className="text-2xl text-text-primary font-bold">7 Days</span>
+                            <span className="text-xs text-text-muted italic">Current lookback window.</span>
                         </div>
                     </div>
                 </div>
 
-                {/* Right Column - Intent Classification */}
-                <div className="glass-card flex flex-col gap-8 col-span-2 bg-[#D4AF37]/2">
-                    <div className="flex items-center gap-3">
-                        <Target size={18} className="text-[#D4AF37]" />
-                        <span className="text-[12px] font-black tracking-[0.2em] uppercase text-white">Semantic Intent</span>
+                {/* Intent/Need Classification */}
+                <div className="card-base bg-brand-tint border-accent/10 flex flex-col gap-6 lg:col-span-2">
+                    <div className="flex items-center gap-2 border-b border-accent/10 pb-4">
+                        <Target size={18} className="text-accent" />
+                        <h3 className="text-lg">Core Audience Needs</h3>
                     </div>
-                    <div className="text-[#94A3B8] text-[14px] whitespace-pre-line leading-relaxed italic bg-black/40 p-8 border border-[#141414] relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 p-4 opacity-20"><Info size={24} /></div>
-                        {analysis?.classification || "Running NLP intent classification models..."}
+
+                    <div className="bg-page/50 rounded-xl p-6 border border-accent/5 relative overflow-hidden flex-1">
+                        <Info size={20} className="absolute top-4 right-4 text-accent/20" />
+                        <p className="text-text-secondary text-[15px] leading-relaxed italic whitespace-pre-line">
+                            {analysis?.classification || "Analyzing conversation sentiment and identifying specific user pain points..."}
+                        </p>
                     </div>
-                    <div className="mt-auto flex flex-col gap-4">
-                        <div className="flex items-center justify-between text-[10px] text-[#475569] font-bold uppercase tracking-widest px-1">
-                            <span>Confidence Score</span>
-                            <span>94%</span>
+
+                    <div className="flex flex-col gap-2 mt-auto pt-4">
+                        <div className="flex items-center justify-between text-[11px] font-bold text-text-muted uppercase tracking-widest">
+                            <span>Analysis Accuracy</span>
+                            <span className="text-accent">94%</span>
                         </div>
-                        <div className="h-1 w-full bg-[#141414]">
-                            <div className="h-full bg-[#D4AF37] w-[94%] opacity-50"></div>
+                        <div className="h-1.5 w-full bg-page rounded-full overflow-hidden">
+                            <div className="h-full bg-accent/40 w-[94%]"></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="flex justify-between items-center bg-[#070707] border border-[#141414] p-8">
-                <div className="flex items-center gap-8">
-                    <div className="flex items-center gap-3 text-[#475569]">
-                        <Share2 size={16} />
-                        <span className="text-[11px] font-black uppercase tracking-[0.2em]">Multi-Channel Feed Enabled</span>
+            <div className="flex flex-col md:flex-row justify-between items-center bg-surface border border-border-dim rounded-2xl p-8 gap-6">
+                <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-brand-tint flex items-center justify-center">
+                        <Share2 size={18} className="text-accent" />
                     </div>
+                    <span className="text-sm font-medium text-text-secondary">Analysis complete across all major platforms.</span>
                 </div>
                 <button
                     onClick={handleContinue}
                     disabled={loading}
-                    className="elite-btn min-w-[280px]"
+                    className="btn-primary min-w-[280px] h-14"
                 >
-                    {loading ? "Sourcing Jackpots..." : "Locate Target Posts"}
-                    {!loading && <ArrowRight size={18} />}
+                    {loading ? "Finding Discussions..." : "Find Target Discussions"}
+                    <ArrowRight size={20} />
                 </button>
             </div>
         </motion.div>

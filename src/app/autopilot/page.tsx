@@ -46,7 +46,7 @@ export default function AutopilotPage() {
                         {[
                             { title: "Smart Triggers", icon: Sparkles, desc: "Automatically engage when keywords trend" },
                             { title: "Workflow Builder", icon: Workflow, desc: "Design complex engagement sequences" },
-                            { title: "Neural Filters", icon: BrainCircuit, desc: "Only engage with high-relevance intent" }
+                            { title: "Intent Filters", icon: BrainCircuit, desc: "Only engage with high-relevance intent" }
                         ].map((item, idx) => (
                             <div key={idx} className="glass-card p-6 flex items-start gap-4">
                                 <div className="p-3 bg-[#141414] border border-[#222] rounded-sm text-[#D4AF37]">
@@ -60,7 +60,7 @@ export default function AutopilotPage() {
                         ))}
                     </div>
 
-                    <button className="elite-btn w-fit px-12 mt-4 group">
+                    <button className="btn-primary w-fit px-12 mt-4 group">
                         <span>Initialize Autopilot</span>
                         <PlayCircle size={18} className="group-hover:rotate-90 transition-transform" />
                     </button>
@@ -85,7 +85,7 @@ export default function AutopilotPage() {
                             <div className="flex flex-col items-center gap-4 relative z-10 w-full max-w-[200px]">
                                 <div className="w-full bg-[#111] border border-[#222] p-4 text-center rounded-sm text-[11px] font-bold text-[#475569] uppercase tracking-widest">Keyword Detect</div>
                                 <div className="h-6 w-0.5 bg-[#D4AF37]/20" />
-                                <div className="w-full bg-[#D4AF37]/5 border border-[#D4AF37]/40 p-4 text-center rounded-sm text-[11px] font-bold text-white uppercase tracking-widest shadow-[0_0_20px_rgba(212,175,55,0.05)]">Neural Filter</div>
+                                <div className="w-full bg-[#D4AF37]/5 border border-[#D4AF37]/40 p-4 text-center rounded-sm text-[11px] font-bold text-white uppercase tracking-widest shadow-[0_0_20px_rgba(212,175,55,0.05)]">Intent Filter</div>
                                 <div className="h-6 w-0.5 bg-[#D4AF37]/20" />
                                 <div className="w-full bg-[#111] border border-[#222] p-4 text-center rounded-sm text-[11px] font-bold text-[#475569] uppercase tracking-widest">Execute Profile</div>
                             </div>
@@ -116,7 +116,7 @@ export default function AutopilotPage() {
 
                     <div className="flex items-center gap-3 px-6 text-[#475569]">
                         <Layers size={14} />
-                        <span className="text-[10px] font-bold uppercase tracking-widest">Stacked Automation Layers: 4 (Elite)</span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest">Stacked Automation Layers: 4 (Pro)</span>
                     </div>
                 </div>
             </div>

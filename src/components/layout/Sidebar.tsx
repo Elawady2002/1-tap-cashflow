@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { LayoutGrid, Radar, Activity, Trophy, MessageSquare, ShieldCheck, LogOut, ChevronRight, GraduationCap, Briefcase, Zap, Cpu } from "lucide-react";
+import { LayoutGrid, Radar, Activity, Trophy, MessageSquare, ShieldCheck, LogOut, ChevronRight, GraduationCap, Briefcase, Zap, Cpu, Target } from "lucide-react";
 import { useSearch } from "@/context/SearchContext";
 import { clsx } from "clsx";
 import { motion } from "framer-motion";
@@ -41,14 +41,13 @@ export function Sidebar() {
             </div>
 
             <div className="flex flex-col p-6 gap-10 relative z-10 h-full">
-                {/* Elite Logo */}
                 <Link href="/dashboard" className="flex items-center gap-4 group">
-                    <div className="w-10 h-10 bg-accent flex items-center justify-center rounded-sm">
-                        <span className="font-bold text-black text-xl brand-font">1</span>
+                    <div className="w-10 h-10 bg-accent flex items-center justify-center rounded-lg shadow-gold">
+                        <Target size={22} className="text-black" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="brand-font text-[20px] text-white tracking-tight leading-none">1-Tap Cashflow</span>
-                        <span className="text-[9px] uppercase tracking-[0.4em] text-accent font-black mt-1">Elite Edition</span>
+                        <span className="brand-font text-[22px] text-text-primary tracking-tight leading-none">1-Tap Cashflow</span>
+                        <span className="text-[10px] font-bold text-text-muted mt-1">Platform Identity</span>
                     </div>
                 </Link>
 
@@ -65,22 +64,22 @@ export function Sidebar() {
                                     key={step.path}
                                     href={step.path}
                                     className={clsx(
-                                        "command-nav-link group py-5 whitespace-nowrap",
+                                        "command-nav-link group py-4 whitespace-nowrap",
                                         isActive && "active"
                                     )}
                                 >
                                     <div className="flex items-center gap-4">
-                                        <Icon size={18} className={clsx(isActive ? "text-[#D4AF37]" : "text-[#475569] group-hover:text-white")} />
-                                        <span className="tracking-[0.2em]">{step.label}</span>
+                                        <Icon size={18} className={clsx(isActive ? "text-accent" : "text-text-muted group-hover:text-text-primary")} />
+                                        <span className="brand-font tracking-wide text-sm font-medium">{step.label}</span>
                                     </div>
-                                    {isActive && <ChevronRight size={14} className="text-[#D4AF37] ml-auto" />}
+                                    {isActive && <ChevronRight size={14} className="text-accent ml-auto" />}
                                 </Link>
                             );
                         })}
                     </div>
 
-                    <div className="flex flex-col gap-2">
-                        <span className="text-[10px] font-black tracking-[0.3em] text-[#475569] uppercase px-5 mb-2">Elite Upgrades</span>
+                    <div className="flex flex-col gap-1">
+                        <span className="text-[10px] font-bold tracking-widest text-[#475569] uppercase px-5 mb-2">Premium Tools</span>
                         {UPGRADES.map((step, index) => {
                             const isActive = pathname === step.path;
                             const Icon = step.icon;
@@ -90,15 +89,15 @@ export function Sidebar() {
                                     key={step.path}
                                     href={step.path}
                                     className={clsx(
-                                        "command-nav-link group py-5 transition-all duration-300 whitespace-nowrap",
-                                        isActive ? "text-[#D4AF37] bg-[#D4AF37]/5" : "text-[#475569] hover:bg-[#D4AF37]/5"
+                                        "command-nav-link group py-4 transition-all duration-300 whitespace-nowrap",
+                                        isActive ? "text-accent bg-accent/5" : "text-text-muted hover:bg-accent/5"
                                     )}
                                 >
                                     <div className="flex items-center gap-4">
-                                        <Icon size={18} className={clsx(isActive ? "text-[#D4AF37]" : "text-[#475569] group-hover:text-[#D4AF37]")} />
-                                        <span className={clsx("tracking-[0.2em] transition-colors font-medium", isActive ? "text-[#D4AF37]" : "group-hover:text-[#D4AF37]")}>{step.label}</span>
+                                        <Icon size={18} className={clsx(isActive ? "text-accent" : "text-text-muted group-hover:text-accent")} />
+                                        <span className={clsx("brand-font tracking-wide text-sm transition-colors font-medium", isActive ? "text-accent" : "group-hover:text-accent")}>{step.label}</span>
                                     </div>
-                                    {isActive && <ChevronRight size={14} className="text-[#D4AF37] ml-auto" />}
+                                    {isActive && <ChevronRight size={14} className="text-accent ml-auto" />}
                                 </Link>
                             );
                         })}
@@ -106,11 +105,11 @@ export function Sidebar() {
                     <div className="flex flex-col gap-2 mt-auto pt-10">
                         <button
                             onClick={resetSession}
-                            className="command-nav-link group py-5 text-red-500/60 hover:text-red-500 hover:bg-red-500/5 mt-auto transition-all duration-300 whitespace-nowrap"
+                            className="command-nav-link group py-4 text-red-500/60 hover:text-red-500 hover:bg-red-500/5 mt-auto transition-all duration-300 whitespace-nowrap"
                         >
                             <div className="flex items-center gap-4">
                                 <LogOut size={18} />
-                                <span className="tracking-[0.2em] font-medium">Logout</span>
+                                <span className="brand-font tracking-wide text-sm font-medium">Logout</span>
                             </div>
                         </button>
                     </div>

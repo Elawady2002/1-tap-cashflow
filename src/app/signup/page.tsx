@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Mail, Lock, UserPlus, ShieldAlert, User, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, UserPlus, ShieldAlert, User, Eye, EyeOff, Target } from "lucide-react";
 
 export default function SignupPage() {
     const [showPassword, setShowPassword] = useState(false);
@@ -65,12 +65,12 @@ export default function SignupPage() {
             >
                 <div className="glass-card p-10 flex flex-col gap-8 border-[#141414] shadow-2xl">
                     <div className="flex flex-col items-center gap-4 text-center">
-                        <div className="w-16 h-16 bg-[#D4AF37] flex items-center justify-center rounded-sm shadow-[0_0_30px_rgba(212,175,55,0.2)]">
-                            <span className="font-bold text-black text-3xl brand-font">1</span>
+                        <div className="w-16 h-16 bg-accent flex items-center justify-center rounded-xl shadow-gold">
+                            <Target size={32} className="text-black" />
                         </div>
                         <div className="flex flex-col">
-                            <h1 className="brand-font text-[28px] text-white leading-tight">1-Tap Cashflow</h1>
-                            <span className="text-[10px] uppercase tracking-[0.4em] text-[#D4AF37] font-black mt-1">Operator Deployment</span>
+                            <h1 className="brand-font text-[32px] text-text-primary leading-tight">1-Tap Cashflow</h1>
+                            <p className="text-sm text-text-secondary">Join our accelerator network</p>
                         </div>
                     </div>
 
@@ -95,8 +95,8 @@ export default function SignupPage() {
                                     required
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
-                                    placeholder="John Doe"
-                                    className="w-full bg-[#0A0A0A] border border-[#141414] focus:border-[#D4AF37]/40 py-4 pl-12 pr-4 text-white text-sm outline-hidden transition-all placeholder:text-[#2A2A2A]"
+                                    placeholder="Full Name"
+                                    className="input-base w-full pl-12"
                                 />
                             </div>
                         </div>
@@ -110,8 +110,8 @@ export default function SignupPage() {
                                     required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="operator@onetapcashflow.ai"
-                                    className="w-full bg-[#0A0A0A] border border-[#141414] focus:border-[#D4AF37]/40 py-4 pl-12 pr-4 text-white text-sm outline-hidden transition-all placeholder:text-[#2A2A2A]"
+                                    placeholder="operator@adradar.ai"
+                                    className="input-base w-full pl-12"
                                 />
                             </div>
                         </div>
@@ -126,7 +126,7 @@ export default function SignupPage() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="••••••••••••"
-                                    className="w-full bg-[#0A0A0A] border border-[#141414] focus:border-[#D4AF37]/40 py-4 pl-12 pr-12 text-white text-sm outline-hidden transition-all placeholder:text-[#2A2A2A]"
+                                    className="input-base w-full pl-12 pr-12"
                                 />
                                 <button
                                     type="button"
@@ -141,7 +141,7 @@ export default function SignupPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="elite-btn w-full mt-2 group relative overflow-hidden"
+                            className="btn-primary w-full mt-2 group relative overflow-hidden"
                         >
                             <span className="relative z-10 flex items-center justify-center gap-2">
                                 {loading ? "Deploying..." : (
@@ -158,7 +158,7 @@ export default function SignupPage() {
                         <p className="text-[#475569] text-xs">Already an operator?</p>
                         <Link
                             href="/login"
-                            className="text-[#D4AF37] text-[11px] font-black uppercase tracking-[0.2em] hover:text-white transition-colors"
+                            className="brand-font text-accent text-xs font-bold tracking-wide hover:text-white transition-colors"
                         >
                             Log In
                         </Link>
@@ -166,8 +166,8 @@ export default function SignupPage() {
                 </div>
 
                 <div className="mt-8 text-center">
-                    <p className="text-[9px] text-[#2A2A2A] uppercase tracking-[0.5em] font-black">
-                        Secure Channel Established // End-to-End Encryption
+                    <p className="brand-font text-[10px] text-text-muted uppercase tracking-widest font-bold">
+                        Secure Connection Established
                     </p>
                 </div>
             </motion.div>

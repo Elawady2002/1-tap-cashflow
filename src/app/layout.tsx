@@ -4,8 +4,8 @@ import { SearchProvider } from "@/context/SearchContext";
 import { Shell } from "@/components/layout/Shell";
 
 export const metadata: Metadata = {
-  title: "1-Tap Cashflow Pro | Executive Social Intelligence",
-  description: "High-end discussion discovery and AI response generation engine.",
+  title: "1-Tap Cashflow | Premium Earning Accelerator",
+  description: "Identify high-potential discussions and generate natural responses that convert.",
 };
 
 export default function RootLayout({

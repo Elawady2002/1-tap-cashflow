@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Radar, ArrowLeft, ArrowRight, Sparkles, Layers } from "lucide-react";
+import { ArrowLeft, ArrowRight, Sparkles, Search, Check } from "lucide-react";
 import { useSearch } from "@/context/SearchContext";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -36,80 +36,67 @@ export default function RadarPage() {
 
     return (
         <motion.div
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex flex-col gap-16 py-10"
+            className="flex flex-col gap-10"
         >
-            <header className="flex flex-col gap-6">
-                <button
-                    onClick={() => router.back()}
-                    className="flex items-center gap-2 text-[#475569] hover:text-[#D4AF37] transition-all text-[10px] font-black uppercase tracking-[0.3em]"
-                >
-                    <ArrowLeft size={14} /> System Recall
-                </button>
-                <div className="flex items-center gap-5">
-                    <div className="w-16 h-16 bg-[#D4AF37]/10 border border-[#D4AF37]/20 flex items-center justify-center rounded-sm">
-                        <Radar size={32} className="text-[#D4AF37]" />
-                    </div>
-                    <div className="flex flex-col">
-                        <h1 className="text-[48px] text-white leading-tight">Neural Radar</h1>
-                        <span className="text-[10px] font-black tracking-[0.4em] uppercase text-[#D4AF37]">Vector Expansion</span>
-                    </div>
+            <header className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
+                    <h1 className="text-4xl text-text-primary">Keyword Expansion</h1>
+                    <p className="subtitle">Choose a specific marketing angle or sub-niche to analyze the conversation landscape.</p>
                 </div>
-                <p className="text-[#94A3B8] text-[16px] max-w-2xl leading-relaxed">
-                    The engine has branched your initial query into high-intent sub-vectors. Select a specific focus to begin deep conversation analysis.
-                </p>
             </header>
 
-            <div className="glass-card">
-                <div className="flex flex-col gap-10">
-                    <div className="flex items-center justify-between border-b border-[#141414] pb-6">
-                        <div className="flex items-center gap-3">
-                            <Layers size={18} className="text-[#D4AF37]" />
-                            <span className="text-[12px] font-black tracking-[0.2em] uppercase text-white">Focus Branches</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <Sparkles size={14} className="text-[#D4AF37]" />
-                            <span className="text-[10px] font-medium text-[#475569] italic">AI Optimized Variations</span>
-                        </div>
+            <div className="card-base flex flex-col gap-8">
+                <div className="flex items-center justify-between border-b border-border-dim/50 pb-6">
+                    <div className="flex items-center gap-2">
+                        <Search size={18} className="text-accent" />
+                        <h3 className="text-lg">Generated Variations</h3>
                     </div>
+                    <div className="flex items-center gap-2 px-3 py-1 bg-brand-tint rounded-full">
+                        <Sparkles size={14} className="text-accent" />
+                        <span className="text-[11px] font-bold text-accent uppercase tracking-wider">AI Optimized</span>
+                    </div>
+                </div>
 
-                    <div className="flex flex-wrap gap-4">
-                        {variations.length > 0 ? variations.map((v, i) => (
+                <div className="flex flex-wrap gap-3">
+                    {variations.length > 0 ? variations.map((v, i) => {
+                        const isSelected = selectedKeyword === v;
+                        return (
                             <button
                                 key={i}
                                 onClick={() => handleSelect(v)}
                                 className={clsx(
-                                    "px-8 py-4 border text-[14px] font-bold transition-all relative overflow-hidden group",
-                                    selectedKeyword === v
-                                        ? "bg-[#D4AF37] text-black border-[#D4AF37] shadow-[0_0_20px_rgba(212,175,55,0.2)]"
-                                        : "bg-black border-[#141414] text-[#475569] hover:border-[#D4AF37]/40 hover:text-white"
+                                    "px-6 py-3 rounded-xl border text-[15px] font-medium transition-all flex items-center gap-2",
+                                    isSelected
+                                        ? "bg-accent text-black border-accent shadow-gold"
+                                        : "bg-surface border-border-dim text-text-secondary hover:border-accent/40 hover:text-text-primary"
                                 )}
                             >
                                 {v}
-                                {selectedKeyword === v && <div className="absolute top-0 right-0 p-1"><Sparkles size={8} /></div>}
+                                {isSelected && <Check size={16} />}
                             </button>
-                        )) : (
-                            <div className="w-full py-20 text-center border border-dashed border-[#141414]">
-                                <p className="text-[#475569] font-medium italic">No variations synthesized. Re-initiate radar at dashboard.</p>
-                            </div>
-                        )}
-                    </div>
+                        );
+                    }) : (
+                        <div className="w-full py-20 text-center border border-dashed border-border-dim rounded-xl">
+                            <p className="text-text-muted">No variations found. Please start a new search from the dashboard.</p>
+                        </div>
+                    )}
                 </div>
             </div>
 
-            <div className="flex justify-between items-center bg-[#070707] border border-[#141414] p-8">
+            <div className="flex flex-col md:flex-row justify-between items-center bg-surface border border-border-dim rounded-2xl p-8 gap-6">
                 <div className="flex flex-col gap-1">
-                    <span className="text-[10px] font-black tracking-[0.2em] uppercase text-[#475569]">Selected Vector</span>
-                    <span className="text-white font-bold text-[18px]">{selectedKeyword || "Awaiting Selection..."}</span>
+                    <span className="text-xs font-bold text-text-muted uppercase tracking-widest">Selected Focus</span>
+                    <span className="text-text-primary font-bold text-xl">{selectedKeyword || "Choose a variation above..."}</span>
                 </div>
                 <button
                     onClick={handleContinue}
                     disabled={loading || !selectedKeyword}
-                    className="elite-btn min-w-[280px]"
+                    className="btn-primary min-w-[280px] h-14"
                 >
-                    {loading ? "Engaging Analysis..." : "Commit Focus"}
-                    {!loading && <ArrowRight size={18} />}
+                    {loading ? "Preparing Analysis..." : "Analyze Marketplace"}
+                    <ArrowRight size={20} />
                 </button>
             </div>
         </motion.div>
