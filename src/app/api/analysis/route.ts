@@ -4,8 +4,11 @@ import { classifyActivity } from "@/lib/llm";
 import { supabase } from "@/lib/supabase";
 
 export async function POST(req: Request) {
+    console.log(">>> [API/ANALYSIS] Incoming Request");
     try {
-        const { keyword } = await req.json();
+        const body = await req.json();
+        const { keyword } = body;
+        console.log(">>> [API/ANALYSIS] Keyword:", keyword);
         if (!keyword) return NextResponse.json({ error: "Keyword required" }, { status: 400 });
 
         // 1. Fetch live social data
@@ -16,7 +19,7 @@ export async function POST(req: Request) {
         const analysis = await classifyActivity(keyword, sampleText);
 
         // 3. Persist to Supabase
-        await supabase.from("analysis_results").insert([{
+        const { error: dbError } = await supabase.from("analysis_results").insert([{
             keyword,
             data: {
                 level: analysis.level,
@@ -24,6 +27,8 @@ export async function POST(req: Request) {
                 classification: analysis.classification
             }
         }]);
+
+        if (dbError) console.error("Supabase Persistence Error (analysis_results):", dbError);
 
         return NextResponse.json({
             level: analysis.level,
@@ -41,7 +46,8 @@ export async function POST(req: Request) {
             
             Semantic intent is focused on "Solution Seeking" and "Comparative Analysis". Users are actively requesting specific features and pricing tiers.
             
-            Recommendation: Engage with value-proposition based replies.`
+            Recommendation: Engage with value-proposition based replies.`,
+            warning: "Displaying simulated data due to a processing error."
         });
     }
 }

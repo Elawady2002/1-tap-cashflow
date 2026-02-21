@@ -1,7 +1,7 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
     let response = NextResponse.next({
         request: {
             headers: request.headers,
@@ -61,6 +61,11 @@ export async function middleware(request: NextRequest) {
     // Define routes
     const isAuthRoute = pathname.startsWith('/login') || pathname.startsWith('/signup')
     const isPublicRoute = pathname.startsWith('/_next') || pathname.startsWith('/api') || pathname === '/favicon.ico'
+
+    // Prevent redirection for API routes if session is missing - just return unauthorized or handle in route
+    if (pathname.startsWith('/api')) {
+        return response
+    }
 
     // If unauthenticated and trying to access app routes, redirect to login
     if (!user && !isAuthRoute && !isPublicRoute) {

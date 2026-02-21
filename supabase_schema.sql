@@ -22,10 +22,16 @@ CREATE TABLE IF NOT EXISTS generated_replies (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Create keyword_variations table
+CREATE TABLE IF NOT EXISTS keyword_variations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  parent_keyword TEXT NOT NULL,
+  variations JSONB NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Enable RLS (simplified for now since using anon key for prototype)
-ALTER TABLE search_history ENABLE ROW LEVEL SECURITY;
-ALTER TABLE analysis_results ENABLE ROW LEVEL SECURITY;
-ALTER TABLE generated_replies ENABLE ROW LEVEL SECURITY;
+ALTER TABLE keyword_variations ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Allow anon select" ON search_history FOR SELECT USING (true);
 CREATE POLICY "Allow anon insert" ON search_history FOR INSERT WITH CHECK (true);
@@ -35,3 +41,6 @@ CREATE POLICY "Allow anon insert" ON analysis_results FOR INSERT WITH CHECK (tru
 
 CREATE POLICY "Allow anon select" ON generated_replies FOR SELECT USING (true);
 CREATE POLICY "Allow anon insert" ON generated_replies FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Allow anon select" ON keyword_variations FOR SELECT USING (true);
+CREATE POLICY "Allow anon insert" ON keyword_variations FOR INSERT WITH CHECK (true);

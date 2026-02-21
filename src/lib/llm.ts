@@ -25,9 +25,16 @@ export async function callChatGPT(messages: { role: string; content: string }[])
     }
 
     const data = await response.json();
-    // Based on rapidapi snippet, we might need to adjust based on actual response structure
-    // Usually it's in data.result or similar
-    return data.result || data.choices?.[0]?.message?.content || JSON.stringify(data);
+    console.log(`ChatGPT API Response (${host}):`, JSON.stringify(data).substring(0, 200) + "...");
+    
+    const result = data.result || data.choices?.[0]?.message?.content || data.response || null;
+    
+    if (!result) {
+        console.error("ChatGPT API Error: Unexpected response structure", data);
+        throw new Error("ChatGPT API Error: Unexpected response structure");
+    }
+    
+    return typeof result === 'string' ? result : JSON.stringify(result);
 }
 
 export async function expandKeywords(keyword: string): Promise<string[]> {
