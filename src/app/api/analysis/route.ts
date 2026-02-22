@@ -60,9 +60,9 @@ export async function POST(req: Request) {
         );
 
         const analysisData = {
-            level: results.length > 5 ? analysis.level : (results.length > 0 ? "Active" : "Stable"),
-            count: results.length || Math.floor(Math.random() * 50) + 10,
-            classification: results.length > 0 ? analysis.classification : `Market niche focused on ${keyword} shows steady background conversation. Audience is actively seeking modular solutions and community-vetted best practices.`,
+            level: results.length > 5 ? analysis.level : (results.length > 0 ? "Active" : analysis.level),
+            count: results.length || analysis.count,
+            classification: analysis.classification,
             confidence: Math.min(confidence, 99), // Cap at 99%
             sources: results.length,
             liveData: hasLiveData,
