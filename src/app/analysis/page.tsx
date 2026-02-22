@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Activity, ArrowLeft, ArrowRight, BarChart3, Target, Info, Share2, History, Loader2 } from "lucide-react";
+import { Activity, ArrowLeft, ArrowRight, BarChart3, Target, Info, Share2, History, Loader2, ChevronDown } from "lucide-react";
 import { useSearch } from "@/context/SearchContext";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
@@ -16,28 +16,37 @@ export default function AnalysisPage() {
     const [loadingVariations, setLoadingVariations] = useState(false);
     const router = useRouter();
 
-    const toggleExpandKeyword = async (h: string) => {
-        if (expandedKeyword === h) {
-            setExpandedKeyword(null);
+    const handleRootChange = async (val: string) => {
+        setExpandedKeyword(val);
+        if (!val) {
+            setActiveVariations([]);
             return;
         }
 
-        setExpandedKeyword(h);
         setLoadingVariations(true);
         try {
             const resp = await fetch("/api/radar", {
                 method: "POST",
-                body: JSON.stringify({ keyword: h })
+                body: JSON.stringify({ keyword: val })
             });
             const data = await resp.json();
             if (resp.ok) {
                 setActiveVariations(data.variations || []);
+                // Reset selected niche when root changes to avoid stale data
+                if (!data.variations.includes(selectedKeyword)) {
+                    setSelectedKeyword("");
+                }
             }
         } catch (e) {
-            console.error("Failed to fetch variations for history:", e);
+            console.error("Failed to fetch variations for root:", e);
         } finally {
             setLoadingVariations(false);
         }
+    };
+
+    const handleVariationChange = async (v: string) => {
+        if (!v || !expandedKeyword) return;
+        fetchAnalysisForVariation(v, expandedKeyword);
     };
 
     const fetchAnalysisForVariation = async (v: string, root: string) => {
@@ -124,108 +133,74 @@ export default function AnalysisPage() {
                 </div>
             </header>
 
-            {/* SECTION 1: SEARCH HISTORY (Standalone Section) */}
+            {/* SECTION 1: SEARCH HISTORY (Dropdown Navigation) */}
             <section className="flex flex-col gap-8">
                 <div className="flex items-center gap-4 border-b border-border-dim/30 pb-6">
                     <History size={28} className="text-accent" />
                     <h2 className="text-2xl font-bold tracking-tight">Recent Search History</h2>
-                    <span className="text-xs text-text-muted mt-1 uppercase tracking-widest font-bold opacity-50 ml-auto hidden md:block">Click keywords to expand variations</span>
+                    <span className="text-xs text-text-muted mt-1 uppercase tracking-widest font-bold opacity-50 ml-auto hidden md:block">Navigate previously analyzed markets</span>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    {history.length > 0 ? history.map((h, i) => {
-                        const isExpanded = expandedKeyword === h;
-                        return (
-                            <div key={i} className="flex flex-col gap-4 group">
-                                <button
-                                    onClick={() => toggleExpandKeyword(h)}
-                                    className={clsx(
-                                        "flex flex-col justify-between p-6 rounded-3xl border transition-all text-left relative overflow-hidden h-auto min-h-[140px]",
-                                        isExpanded
-                                            ? "bg-accent/10 border-accent/60 shadow-xl shadow-gold/10"
-                                            : "bg-surface/40 border-border-dim/50 hover:border-accent/40 hover:bg-surface/60 shadow-sm"
-                                    )}
-                                >
-                                    {isExpanded && <div className="absolute top-0 right-0 w-24 h-24 bg-accent/5 blur-3xl -mr-12 -mt-12" />}
-
-                                    <div className="flex flex-col gap-1 z-10">
-                                        <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] opacity-60">Keyword</span>
-                                        <span className={clsx(
-                                            "text-lg font-black truncate transition-colors",
-                                            isExpanded ? "text-accent" : "text-text-secondary group-hover:text-text-primary"
-                                        )}>{h}</span>
-                                    </div>
-
-                                    <div className="flex items-center justify-between w-full mt-6 z-10">
-                                        <span className="text-[10px] font-bold text-accent px-3 py-1 bg-accent/5 rounded-full border border-accent/10 uppercase tracking-widest">Global Scan</span>
-                                        <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-page/40 group-hover:bg-accent/10 transition-colors">
-                                            {isExpanded ? (
-                                                <div className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse" />
-                                            ) : (
-                                                <ArrowRight size={18} className="text-text-muted opacity-50 group-hover:text-accent transition-all" />
-                                            )}
-                                        </div>
-                                    </div>
-                                </button>
-
-                                {isExpanded && (
-                                    <motion.div
-                                        initial={{ height: 0, opacity: 0 }}
-                                        animate={{ height: "auto", opacity: 1 }}
-                                        className="flex flex-col gap-3 p-6 bg-sidebar/40 rounded-4xl border border-accent/20 shadow-inner"
-                                    >
-                                        <h4 className="text-[10px] font-bold text-accent uppercase tracking-widest mb-2 px-1 opacity-80">Niche Variations</h4>
-                                        {loadingVariations ? (
-                                            <div className="flex items-center gap-4 p-4 bg-page/30 rounded-2xl animate-pulse">
-                                                <Loader2 size={16} className="animate-spin text-accent" />
-                                                <span className="text-sm text-text-muted font-bold tracking-tight">Syncing threads...</span>
-                                            </div>
-                                        ) : activeVariations.length > 0 ? (
-                                            <div className="flex flex-col gap-2 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
-                                                {activeVariations.map((v, idx) => {
-                                                    const isSelected = selectedKeyword === v;
-                                                    return (
-                                                        <button
-                                                            key={idx}
-                                                            onClick={() => fetchAnalysisForVariation(v, h)}
-                                                            disabled={fetchingHistory !== null}
-                                                            className={clsx(
-                                                                "text-left p-5 rounded-2xl text-sm transition-all border flex items-center justify-between group/v",
-                                                                isSelected
-                                                                    ? "bg-accent text-black border-accent font-black shadow-lg shadow-gold/20"
-                                                                    : "bg-surface/50 border-border-dim/20 text-text-secondary hover:text-text-primary hover:border-accent/40"
-                                                            )}
-                                                        >
-                                                            <span className="truncate">{v}</span>
-                                                            {fetchingHistory === v ? (
-                                                                <Loader2 size={14} className="animate-spin" />
-                                                            ) : isSelected ? (
-                                                                <div className="w-2 h-2 rounded-full bg-black/30" />
-                                                            ) : (
-                                                                <ArrowRight size={14} className="opacity-0 group-hover/v:opacity-100 transition-opacity text-accent" />
-                                                            )}
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                        ) : (
-                                            <div className="text-xs text-text-muted p-8 bg-page/20 rounded-3xl text-center italic border border-dashed border-border-dim/30">
-                                                No variations found.
-                                            </div>
-                                        )}
-                                    </motion.div>
-                                )}
+                {history.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-2 bg-surface/20 rounded-[2.5rem] border border-border-dim/20 backdrop-blur-sm shadow-inner">
+                        {/* Root Keyword Select */}
+                        <div className="relative group">
+                            <select
+                                value={expandedKeyword || ""}
+                                onChange={(e) => handleRootChange(e.target.value)}
+                                className="w-full h-20 bg-surface/40 border border-border-dim/30 rounded-3xl px-8 text-text-primary font-black text-lg appearance-none cursor-pointer focus:border-accent/60 focus:bg-surface/60 transition-all outline-none"
+                            >
+                                <option value="" className="bg-surface text-text-muted">Select Research Root...</option>
+                                {history.map((h, i) => (
+                                    <option key={i} value={h} className="bg-surface text-text-primary">
+                                        {h.toUpperCase()}
+                                    </option>
+                                ))}
+                            </select>
+                            <div className="absolute right-8 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted group-hover:text-accent transition-colors">
+                                <ChevronDown size={24} />
                             </div>
-                        );
-                    }) : (
-                        <div className="col-span-full card-base bg-page/20 border-dashed border-2 py-20 flex flex-col items-center justify-center gap-6 opacity-60">
-                            <div className="w-16 h-16 rounded-3xl bg-surface flex items-center justify-center border border-border-dim/50">
-                                <History size={32} className="text-text-muted/40" />
-                            </div>
-                            <p className="text-xl text-text-muted font-medium italic">History is clear. Start your first search to fill this space.</p>
                         </div>
-                    )}
-                </div>
+
+                        {/* Variation Select */}
+                        <div className="relative group">
+                            {loadingVariations ? (
+                                <div className="w-full h-20 bg-surface/40 border border-border-dim/30 rounded-3xl px-8 flex items-center justify-between animate-pulse">
+                                    <span className="text-text-muted text-sm font-bold uppercase tracking-[0.2em]">Syncing Niche Threads...</span>
+                                    <Loader2 size={24} className="animate-spin text-accent" />
+                                </div>
+                            ) : (
+                                <>
+                                    <select
+                                        disabled={!expandedKeyword || activeVariations.length === 0}
+                                        value={selectedKeyword || ""}
+                                        onChange={(e) => handleVariationChange(e.target.value)}
+                                        className="w-full h-20 bg-surface/40 border border-border-dim/30 rounded-3xl px-8 text-text-primary font-black text-lg appearance-none cursor-pointer focus:border-accent/60 focus:bg-surface/60 transition-all outline-none disabled:opacity-30 disabled:cursor-not-allowed"
+                                    >
+                                        <option value="" className="bg-surface text-text-muted">
+                                            {expandedKeyword ? (activeVariations.length > 0 ? "Select Intelligence Niche..." : "No niches found") : "Awaiting Root Selection..."}
+                                        </option>
+                                        {activeVariations.map((v, i) => (
+                                            <option key={i} value={v} className="bg-surface text-text-primary">
+                                                {v}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <div className="absolute right-8 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted group-hover:text-accent transition-colors">
+                                        <ChevronDown size={24} />
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                ) : (
+                    <div className="col-span-full card-base bg-page/20 border-dashed border-2 py-20 flex flex-col items-center justify-center gap-6 opacity-60">
+                        <div className="w-16 h-16 rounded-3xl bg-surface flex items-center justify-center border border-border-dim/50">
+                            <History size={32} className="text-text-muted/40" />
+                        </div>
+                        <p className="text-xl text-text-muted font-medium italic">History is clear. Start your first search to fill this space.</p>
+                    </div>
+                )}
             </section>
 
             {/* SECTION 2: INTEL & ANALYSIS (Activity + Core Needs) */}
