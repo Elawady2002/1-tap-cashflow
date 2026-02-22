@@ -58,6 +58,7 @@ export default function AnalysisPage() {
 
             const resp = await fetch("/api/analysis", {
                 method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ keyword: v })
             });
             const data = await resp.json();
@@ -81,6 +82,7 @@ export default function AnalysisPage() {
         try {
             const resp = await fetch("/api/jackpots", {
                 method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ keyword: selectedKeyword })
             });
             const data = await resp.json();
