@@ -99,19 +99,25 @@ export default function JackpotsPage() {
         if (selectedPosts.length === 0) return;
         setLoading(true);
         try {
-            const resp = await fetch("/api/generate", {
+            const resp = await fetch("/api/replies", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    results: selectedPosts,
+                    posts: selectedPosts,
                     affiliateLink
                 })
             });
             const data = await resp.json();
-            setReplies(data.replies || []);
+
+            if (!resp.ok) {
+                throw new Error(data.error || "Failed to generate replies");
+            }
+
+            setReplies(data.results || []);
             router.push("/generate");
         } catch (e) {
-            console.error(e);
+            console.error("Failed to generate replies:", e);
+            alert("حدث خطأ أثناء توليد الردود. يرجى المحاولة مرة أخرى.");
         } finally {
             setLoading(false);
         }

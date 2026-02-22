@@ -15,6 +15,12 @@ export default function GeneratePage() {
     const router = useRouter();
 
     useEffect(() => {
+        // If we already have replies from the Jackpots page, don't re-generate
+        if (replies && replies.length > 0) {
+            setCurrentPosts(selectedPosts);
+            return;
+        }
+
         let targetPosts: any[] = selectedPosts;
         let targetLink = affiliateLink;
 
