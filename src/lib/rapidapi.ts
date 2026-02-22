@@ -1,6 +1,7 @@
 import * as cheerio from 'cheerio';
 
 export async function searchSocialData(keyword: string) {
+    // Trim to remove any accidental spaces/newlines in .env file that cause 401 errors
     const scraperKey = process.env.SCRAPERAPI_KEY?.trim();
 
     if (!scraperKey) {
@@ -12,7 +13,8 @@ export async function searchSocialData(keyword: string) {
         const targetUrl = `https://www.google.com/search?q=site%3Areddit.com+OR+site%3Ayoutube.com+${encodeURIComponent(keyword)}+after%3A2024-01-01`;
         const scraperUrl = `https://api.scraperapi.com/?api_key=${scraperKey}&url=${encodeURIComponent(targetUrl)}&render=true&premium=true`;
 
-        // Using cache: "no-store" ensures Next.js doesn't aggressively cache previous 401/500 errors
+        // Cache: "no-store" is essential here to prevent Next.js from caching previous 401/500 failures 
+        // across different keywords or after fixing environment variables.
         const response = await fetch(scraperUrl, { cache: "no-store" });
 
         if (!response.ok) {
