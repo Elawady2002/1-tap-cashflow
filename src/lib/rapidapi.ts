@@ -30,10 +30,27 @@ export async function searchSocialData(keyword: string) {
 
         const extractFromSelector = (selector: string) => {
             $(selector).each((i, el) => {
+                // Remove script and style tags from the current element block to avoid grabbing JS code
+                $(el).find('script, style, meta, link, noscript').remove();
+
                 const url = $(el).find('a').first().attr('href') || '';
-                const title = $(el).find('h3').first().text() || '';
-                let snippet = $(el).find('div[data-sncf]').text() || $(el).find('.VwiC3b').text();
-                if (!snippet) snippet = $(el).text().substring(0, 150);
+                const title = $(el).find('h3').first().text().trim() || '';
+
+                // Specific Google snippet containers
+                let snippet = $(el).find('div[data-sncf]').text() ||
+                    $(el).find('.VwiC3b').text() ||
+                    $(el).find('.y4550c').text() ||
+                    "";
+
+                // Fallback to general text if snippet is missing, but keep it short
+                if (!snippet || snippet.length < 20) {
+                    snippet = $(el).text().trim().substring(0, 200);
+                }
+
+                // VALIDATION: Skip results that look like JavaScript code (common when scraping rendered pages)
+                if (snippet.includes('(function()') || snippet.includes('var id=') || snippet.includes('document.get') || snippet.length < 10) {
+                    return;
+                }
 
                 if (url && title && (url.includes('reddit.com') || url.includes('youtube.com'))) {
                     // Avoid duplicates
@@ -43,7 +60,12 @@ export async function searchSocialData(keyword: string) {
                             id: Math.random().toString(36).substring(2, 10),
                             platform: isReddit ? 'Reddit' : 'YouTube',
                             title: title,
-                            text: snippet.replace(/^.*?Read more/g, '').trim() || title, // Clean up Google snippet artifacts
+                            // Clean up Google snippet artifacts and common noise
+                            text: snippet
+                                .replace(/^.*?Read more/gi, '')
+                                .replace(/\s+/g, ' ')
+                                .replace(/YouTube \w+/g, '')
+                                .trim() || title,
                             url: url,
                             engagement: Math.floor(Math.random() * (isReddit ? 200 : 500)) + 10
                         });
