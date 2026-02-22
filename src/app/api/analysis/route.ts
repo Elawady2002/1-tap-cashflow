@@ -65,7 +65,8 @@ export async function POST(req: Request) {
             classification: results.length > 0 ? analysis.classification : `Market niche focused on ${keyword} shows steady background conversation. Audience is actively seeking modular solutions and community-vetted best practices.`,
             confidence: Math.min(confidence, 99), // Cap at 99%
             sources: results.length,
-            liveData: hasLiveData
+            liveData: hasLiveData,
+            threads: results.slice(0, 25) // Store top 25 threads for Targeted Discussions
         };
 
         // 4. Persist to Supabase
