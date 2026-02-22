@@ -1,7 +1,7 @@
 import * as cheerio from 'cheerio';
 
 export async function searchSocialData(keyword: string) {
-    const scraperKey = process.env.SCRAPERAPI_KEY;
+    const scraperKey = process.env.SCRAPERAPI_KEY?.trim();
 
     if (!scraperKey) {
         throw new Error("Missing SCRAPERAPI_KEY");
@@ -12,7 +12,8 @@ export async function searchSocialData(keyword: string) {
         const targetUrl = `https://www.google.com/search?q=site%3Areddit.com+OR+site%3Ayoutube.com+${encodeURIComponent(keyword)}+after%3A2024-01-01`;
         const scraperUrl = `https://api.scraperapi.com/?api_key=${scraperKey}&url=${encodeURIComponent(targetUrl)}&render=true&premium=true`;
 
-        const response = await fetch(scraperUrl, { next: { revalidate: 3600 } });
+        // Using cache: "no-store" ensures Next.js doesn't aggressively cache previous 401/500 errors
+        const response = await fetch(scraperUrl, { cache: "no-store" });
 
         if (!response.ok) {
             throw new Error(`ScraperAPI returned status: ${response.status}`);
