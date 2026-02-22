@@ -17,12 +17,11 @@ export async function POST(req: Request) {
             .select("data")
             .eq("keyword", keyword)
             .order("created_at", { ascending: false })
-            .limit(1)
-            .single();
+            .limit(1);
 
-        if (existingAnalysis) {
+        if (existingAnalysis && existingAnalysis.length > 0) {
             console.log(">>> [API/ANALYSIS] Using Cached Analysis Results");
-            return NextResponse.json(existingAnalysis.data);
+            return NextResponse.json(existingAnalysis[0].data);
         }
 
         // 1. Fetch live social data

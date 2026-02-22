@@ -142,13 +142,13 @@ export default function AnalysisPage() {
                 </div>
 
                 {history.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-1.5 bg-surface/20 rounded-3xl border border-border-dim/20 backdrop-blur-sm shadow-sm">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-1 bg-surface/10 rounded-2xl border border-border-dim/10 backdrop-blur-sm shadow-sm">
                         {/* Root Keyword Select */}
                         <div className="relative group">
                             <select
                                 value={expandedKeyword || ""}
                                 onChange={(e) => handleRootChange(e.target.value)}
-                                className="w-full h-14 bg-surface/40 border border-border-dim/30 rounded-2xl px-6 text-text-primary font-black text-base appearance-none cursor-pointer focus:border-accent/60 focus:bg-surface/60 transition-all outline-none"
+                                className="w-full h-12 bg-surface/30 border border-border-dim/20 rounded-xl px-4 text-text-primary font-bold text-sm appearance-none cursor-pointer focus:border-accent/40 focus:bg-surface/50 transition-all outline-none"
                             >
                                 <option value="" className="bg-surface text-text-muted">Select Research Root...</option>
                                 {history.map((h, i) => (
@@ -157,17 +157,17 @@ export default function AnalysisPage() {
                                     </option>
                                 ))}
                             </select>
-                            <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted group-hover:text-accent transition-colors">
-                                <ChevronDown size={20} />
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted group-hover:text-accent transition-colors">
+                                <ChevronDown size={18} />
                             </div>
                         </div>
 
                         {/* Variation Select */}
                         <div className="relative group">
                             {loadingVariations ? (
-                                <div className="w-full h-14 bg-surface/40 border border-border-dim/30 rounded-2xl px-6 flex items-center justify-between animate-pulse">
-                                    <span className="text-text-muted text-xs font-bold uppercase tracking-[0.2em]">Syncing...</span>
-                                    <Loader2 size={20} className="animate-spin text-accent" />
+                                <div className="w-full h-12 bg-surface/30 border border-border-dim/20 rounded-xl px-4 flex items-center justify-between animate-pulse">
+                                    <span className="text-text-muted text-[10px] font-bold uppercase tracking-[0.2em]">Syncing...</span>
+                                    <Loader2 size={18} className="animate-spin text-accent" />
                                 </div>
                             ) : (
                                 <>
@@ -175,7 +175,7 @@ export default function AnalysisPage() {
                                         disabled={!expandedKeyword || activeVariations.length === 0}
                                         value={selectedKeyword || ""}
                                         onChange={(e) => handleVariationChange(e.target.value)}
-                                        className="w-full h-14 bg-surface/40 border border-border-dim/30 rounded-2xl px-6 text-text-primary font-black text-base appearance-none cursor-pointer focus:border-accent/60 focus:bg-surface/60 transition-all outline-none disabled:opacity-30 disabled:cursor-not-allowed"
+                                        className="w-full h-12 bg-surface/30 border border-border-dim/20 rounded-xl px-4 text-text-primary font-bold text-sm appearance-none cursor-pointer focus:border-accent/40 focus:bg-surface/50 transition-all outline-none disabled:opacity-30 disabled:cursor-not-allowed"
                                     >
                                         <option value="" className="bg-surface text-text-muted">
                                             {expandedKeyword ? (activeVariations.length > 0 ? "Select Intelligence Niche..." : "No niches found") : "Awaiting Root Selection..."}
@@ -186,8 +186,8 @@ export default function AnalysisPage() {
                                             </option>
                                         ))}
                                     </select>
-                                    <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted group-hover:text-accent transition-colors">
-                                        <ChevronDown size={20} />
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted group-hover:text-accent transition-colors">
+                                        <ChevronDown size={18} />
                                     </div>
                                 </>
                             )}
@@ -331,7 +331,7 @@ export default function AnalysisPage() {
                         <button
                             onClick={handleContinue}
                             disabled={loading || !analysis}
-                            className="w-full sm:w-auto btn-primary min-w-[260px] h-14 rounded-2xl text-lg font-black tracking-tight shadow-md hover:-translate-y-0.5 transition-all duration-500"
+                            className="w-full sm:w-auto btn-primary min-w-[260px] h-14 rounded-2xl text-lg font-black tracking-tight shadow-md hover:-translate-y-0.5 transition-all duration-500 whitespace-nowrap px-8"
                         >
                             {loading ? (
                                 <div className="flex items-center justify-center gap-3">
