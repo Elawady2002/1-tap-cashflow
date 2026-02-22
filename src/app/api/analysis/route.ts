@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { searchSocialData } from "@/lib/rapidapi";
+import { searchSocialData, sanitizePosts } from "@/lib/rapidapi";
 import { classifyActivity } from "@/lib/llm";
 import { supabase } from "@/lib/supabase";
 
@@ -20,8 +20,13 @@ export async function POST(req: Request) {
             .limit(1);
 
         if (existingAnalysis && existingAnalysis.length > 0) {
-            console.log(">>> [API/ANALYSIS] Using Cached Analysis Results");
+            console.log(">>> [API/ANALYSIS] Using Cached Analysis Results (with sanitization)");
             const data = existingAnalysis[0].data;
+
+            // Sanitization check for threads even in cache
+            if (data.threads) {
+                data.threads = sanitizePosts(data.threads);
+            }
 
             // If it's an old result without confidence, attach a realistic fallback
             if (data.confidence === undefined) {
@@ -43,15 +48,17 @@ export async function POST(req: Request) {
             // and let the classifyActivity handle the fallback or use mock results.
         }
 
-        const sampleText = results.length > 0 ? results.slice(0, 10).map(r => r.text).join("\n") : "";
+        // Sanitize live results before processing
+        const cleanResults = sanitizePosts(results);
+        const sampleText = cleanResults.length > 0 ? cleanResults.slice(0, 10).map(r => r.text).join("\n") : "";
 
         // 2. Perform live AI analysis
         const analysis = await classifyActivity(keyword, sampleText);
 
         // 3. Compute dynamic confidence based on data quality
-        const hasLiveData = results.length > 0;
+        const hasLiveData = cleanResults.length > 0;
         const hasAIClassification = !!analysis.classification && analysis.classification.length > 20;
-        const dataRichness = Math.min(results.length / 20, 1); // 0-1 scale, max at 20 results
+        const dataRichness = Math.min(cleanResults.length / 20, 1); // 0-1 scale, max at 20 results
         const confidence = Math.round(
             (hasLiveData ? 40 : 10) +          // Live data base score
             (hasAIClassification ? 30 : 5) +   // AI classification quality
@@ -60,13 +67,13 @@ export async function POST(req: Request) {
         );
 
         const analysisData = {
-            level: results.length > 5 ? analysis.level : (results.length > 0 ? "Active" : analysis.level),
-            count: results.length || analysis.count,
+            level: cleanResults.length > 5 ? analysis.level : (cleanResults.length > 0 ? "Active" : analysis.level),
+            count: cleanResults.length || analysis.count,
             classification: analysis.classification,
             confidence: Math.min(confidence, 99), // Cap at 99%
-            sources: results.length,
+            sources: cleanResults.length,
             liveData: hasLiveData,
-            threads: results.slice(0, 25) // Store top 25 threads for Targeted Discussions
+            threads: cleanResults.slice(0, 25) // Store top 25 threads for Targeted Discussions
         };
 
         // 4. Persist to Supabase

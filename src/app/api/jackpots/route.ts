@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { searchSocialData } from "@/lib/rapidapi";
+import { searchSocialData, sanitizePosts } from "@/lib/rapidapi";
 import { supabase } from "@/lib/supabase";
 
 export async function POST(req: Request) {
@@ -19,8 +19,10 @@ export async function POST(req: Request) {
             .limit(1);
 
         if (existingAnalysis && existingAnalysis.length > 0 && existingAnalysis[0].data?.threads?.length > 0) {
-            console.log(">>> [API/JACKPOTS] Using stored threads from analysis_results");
-            return NextResponse.json({ results: existingAnalysis[0].data.threads });
+            console.log(">>> [API/JACKPOTS] Using stored threads from analysis_results (with sanitization)");
+            // APPLY SANITIZATION HERE for existing cached results
+            const cleanThreads = sanitizePosts(existingAnalysis[0].data.threads);
+            return NextResponse.json({ results: cleanThreads });
         }
 
         // 2. No stored threads — fetch live data

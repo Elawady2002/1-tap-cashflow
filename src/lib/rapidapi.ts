@@ -1,5 +1,35 @@
 import * as cheerio from 'cheerio';
 
+/**
+ * Sanitizes an array of posts by removing JavaScript snippets, 
+ * tracking code, and low-quality fragments.
+ */
+export function sanitizePosts(posts: any[]): any[] {
+    if (!posts || !Array.isArray(posts)) return [];
+
+    return posts.filter(post => {
+        const text = (post.text || post.title || "").toLowerCase();
+
+        // Block known JS/Tracking fingerprint matches
+        const isCode =
+            text.includes('(function()') ||
+            text.includes('var id=') ||
+            text.includes('document.getelementbyid') ||
+            text.includes('setattribute') ||
+            (text.includes('.js') && text.includes('script')) ||
+            text.length < 15; // Too short to be meaningful
+
+        return !isCode;
+    }).map(post => ({
+        ...post,
+        text: (post.text || post.title || "")
+            .replace(/^.*?Read more/gi, '')
+            .replace(/\s+/g, ' ')
+            .replace(/YouTube \w+/g, '')
+            .trim()
+    }));
+}
+
 export async function searchSocialData(keyword: string) {
     // Trim to remove any accidental spaces/newlines in .env file that cause 401 errors
     const scraperKey = process.env.SCRAPERAPI_KEY?.trim();
@@ -47,11 +77,6 @@ export async function searchSocialData(keyword: string) {
                     snippet = $(el).text().trim().substring(0, 200);
                 }
 
-                // VALIDATION: Skip results that look like JavaScript code (common when scraping rendered pages)
-                if (snippet.includes('(function()') || snippet.includes('var id=') || snippet.includes('document.get') || snippet.length < 10) {
-                    return;
-                }
-
                 if (url && title && (url.includes('reddit.com') || url.includes('youtube.com'))) {
                     // Avoid duplicates
                     if (!results.find(r => r.url === url)) {
@@ -60,12 +85,7 @@ export async function searchSocialData(keyword: string) {
                             id: Math.random().toString(36).substring(2, 10),
                             platform: isReddit ? 'Reddit' : 'YouTube',
                             title: title,
-                            // Clean up Google snippet artifacts and common noise
-                            text: snippet
-                                .replace(/^.*?Read more/gi, '')
-                                .replace(/\s+/g, ' ')
-                                .replace(/YouTube \w+/g, '')
-                                .trim() || title,
+                            text: snippet,
                             url: url,
                             engagement: Math.floor(Math.random() * (isReddit ? 200 : 500)) + 10
                         });
@@ -85,7 +105,9 @@ export async function searchSocialData(keyword: string) {
             throw new Error("No live results found for this keyword.");
         }
 
-        return results.sort((a, b) => b.engagement - a.engagement);
+        // Apply shared sanitization logic
+        const sanitized = sanitizePosts(results);
+        return sanitized.sort((a, b) => b.engagement - a.engagement);
     } catch (error) {
         console.error("Data Fetching Error:", error);
         throw error;
