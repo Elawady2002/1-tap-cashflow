@@ -16,6 +16,9 @@ interface AnalysisData {
     level: string;
     count: number;
     classification: string;
+    confidence?: number;
+    sources?: number;
+    liveData?: boolean;
 }
 
 interface SearchContextType {

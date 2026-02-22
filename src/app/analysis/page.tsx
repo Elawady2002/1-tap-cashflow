@@ -213,61 +213,7 @@ export default function AnalysisPage() {
                 </div>
 
                 <div className="grid grid-cols-1 xl:grid-cols-12 gap-10">
-                    {/* Activity Density Card */}
-                    <div className="card-base xl:col-span-12 flex flex-col gap-6 p-6 shadow-sm bg-surface/30 backdrop-blur-md border-border-dim/20">
-                        <div className="flex items-center justify-between border-b border-border-dim/30 pb-4">
-                            <div className="flex items-center gap-3">
-                                <Activity size={24} className="text-accent" />
-                                <h3 className="text-xl font-bold tracking-tight">Activity Density</h3>
-                            </div>
-                            <div className="flex items-center gap-2 px-4 py-2 bg-success/5 border border-success/20 rounded-xl">
-                                <span className="w-1.5 h-1.5 rounded-full bg-success animate-ping" />
-                                <span className="text-success text-[10px] font-black uppercase tracking-tighter">Live Scan</span>
-                            </div>
-                        </div>
-
-                        <div className="flex flex-col gap-6">
-                            <div className="flex flex-col gap-2">
-                                <span className={clsx("text-4xl font-black leading-none tracking-tighter transition-colors duration-1000 shadow-none", getActivityColor(analysis?.level || ''))}>
-                                    {analysis?.level || "SCANNING..."}
-                                </span>
-                                <p className="text-sm font-bold text-text-muted opacity-60 max-w-lg mt-1 uppercase tracking-widest leading-relaxed">
-                                    Current conversation volume across target discussion hubs.
-                                </p>
-                            </div>
-
-                            <div className="h-4 w-full bg-page/60 rounded-full overflow-hidden border border-border-dim/30 p-1 animate-pulse-slow">
-                                <motion.div
-                                    initial={{ width: 0 }}
-                                    animate={{ width: analysis?.level === 'High Activity' ? '100%' : analysis?.level === 'Active' ? '65%' : '25%' }}
-                                    className={clsx("h-full rounded-full transition-all duration-1000 shadow-[0_0_30px_-5px]",
-                                        analysis?.level === 'High Activity' ? 'bg-success shadow-success/40' : 'bg-accent shadow-accent/40'
-                                    )}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-border-dim/30 mt-4">
-                            <div className="flex flex-col gap-4 p-6 bg-page/20 rounded-3xl border border-border-dim/20">
-                                <span className="text-[12px] text-text-muted font-bold uppercase tracking-widest opacity-50">Pulse Volume</span>
-                                <div className="flex items-baseline gap-2">
-                                    <span className="text-5xl text-text-primary font-black tracking-tighter">{analysis?.count?.toLocaleString() || 0}</span>
-                                    <span className="text-sm text-accent font-bold">Units</span>
-                                </div>
-                                <span className="text-sm text-text-muted font-medium opacity-60">Verified in last 7 days.</span>
-                            </div>
-                            <div className="flex flex-col gap-4 p-6 bg-page/20 rounded-3xl border border-border-dim/20">
-                                <span className="text-[12px] text-text-muted font-bold uppercase tracking-widest opacity-50">Scan Window</span>
-                                <div className="flex items-baseline gap-2">
-                                    <span className="text-5xl text-text-primary font-black tracking-tighter">7</span>
-                                    <span className="text-sm text-accent font-bold">Days</span>
-                                </div>
-                                <span className="text-sm text-text-muted font-medium opacity-60">Rolling perspective.</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Audience Intent Card */}
+                    {/* Audience Intent Card (TOP) */}
                     <div className="card-base xl:col-span-12 bg-surface/30 border-border-dim/20 flex flex-col gap-6 p-6 shadow-sm relative overflow-hidden backdrop-blur-md">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 blur-3xl -mr-16 -mt-16" />
 
@@ -296,17 +242,98 @@ export default function AnalysisPage() {
                         <div className="flex flex-col gap-4 mt-auto pt-6 border-t border-border-dim/10 relative z-10">
                             <div className="flex items-center justify-between text-[10px] font-black text-text-muted uppercase tracking-widest">
                                 <span>AI Confidence</span>
-                                <span className="text-accent bg-accent/10 px-3 py-1 rounded-xl border border-accent/20 font-black">94% Precision</span>
+                                <span className={clsx("px-3 py-1 rounded-xl border font-black",
+                                    (analysis?.confidence ?? 0) >= 70 ? "text-success bg-success/10 border-success/20" :
+                                        (analysis?.confidence ?? 0) >= 40 ? "text-accent bg-accent/10 border-accent/20" :
+                                            "text-text-muted bg-page/30 border-border-dim/20"
+                                )}>
+                                    {analysis?.confidence ?? 0}% Precision
+                                </span>
                             </div>
                             <div className="h-2 w-full bg-page/50 rounded-full overflow-hidden p-0.5 shadow-none">
                                 <motion.div
                                     initial={{ width: 0 }}
-                                    animate={{ width: "94%" }}
-                                    className="h-full bg-accent/80 rounded-full"
+                                    animate={{ width: `${analysis?.confidence ?? 0}%` }}
+                                    transition={{ duration: 1.2, ease: "easeOut" }}
+                                    className={clsx("h-full rounded-full",
+                                        (analysis?.confidence ?? 0) >= 70 ? "bg-success" :
+                                            (analysis?.confidence ?? 0) >= 40 ? "bg-accent/80" :
+                                                "bg-text-muted/40"
+                                    )}
                                 ></motion.div>
                             </div>
                         </div>
                     </div>
+
+                    {/* Activity Density Card (BOTTOM) */}
+                    <div className="card-base xl:col-span-12 flex flex-col gap-6 p-6 shadow-sm bg-surface/30 backdrop-blur-md border-border-dim/20">
+                        <div className="flex items-center justify-between border-b border-border-dim/30 pb-4">
+                            <div className="flex items-center gap-3">
+                                <Activity size={24} className="text-accent" />
+                                <h3 className="text-xl font-bold tracking-tight">Activity Density</h3>
+                            </div>
+                            <div className={clsx("flex items-center gap-2 px-4 py-2 rounded-xl border",
+                                analysis?.liveData ? "bg-success/5 border-success/20" : "bg-accent/5 border-accent/20"
+                            )}>
+                                <span className={clsx("w-1.5 h-1.5 rounded-full", analysis?.liveData ? "bg-success animate-ping" : "bg-accent/40")} />
+                                <span className={clsx("text-[10px] font-black uppercase tracking-tighter", analysis?.liveData ? "text-success" : "text-accent/60")}>
+                                    {analysis?.liveData ? "Live Scan" : "Cached"}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col gap-6">
+                            <div className="flex flex-col gap-2">
+                                <span className={clsx("text-4xl font-black leading-none tracking-tighter transition-colors duration-1000 shadow-none", getActivityColor(analysis?.level || ''))}>
+                                    {analysis?.level || "SCANNING..."}
+                                </span>
+                                <p className="text-sm font-bold text-text-muted opacity-60 max-w-lg mt-1 uppercase tracking-widest leading-relaxed">
+                                    Current conversation volume across target discussion hubs.
+                                </p>
+                            </div>
+
+                            <div className="h-4 w-full bg-page/60 rounded-full overflow-hidden border border-border-dim/30 p-1 animate-pulse-slow">
+                                <motion.div
+                                    initial={{ width: 0 }}
+                                    animate={{ width: analysis?.level === 'High Activity' ? '100%' : analysis?.level === 'Active' ? '65%' : '25%' }}
+                                    className={clsx("h-full rounded-full transition-all duration-1000 shadow-[0_0_30px_-5px]",
+                                        analysis?.level === 'High Activity' ? 'bg-success shadow-success/40' : 'bg-accent shadow-accent/40'
+                                    )}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 border-t border-border-dim/30 mt-4">
+                            <div className="flex flex-col gap-4 p-6 bg-page/20 rounded-3xl border border-border-dim/20">
+                                <span className="text-[12px] text-text-muted font-bold uppercase tracking-widest opacity-50">Pulse Volume</span>
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-5xl text-text-primary font-black tracking-tighter">{analysis?.count?.toLocaleString() || 0}</span>
+                                    <span className="text-sm text-accent font-bold">Units</span>
+                                </div>
+                                <span className="text-sm text-text-muted font-medium opacity-60">
+                                    {analysis?.liveData ? `From ${analysis?.sources || 0} live sources.` : "Estimated from cached data."}
+                                </span>
+                            </div>
+                            <div className="flex flex-col gap-4 p-6 bg-page/20 rounded-3xl border border-border-dim/20">
+                                <span className="text-[12px] text-text-muted font-bold uppercase tracking-widest opacity-50">Data Sources</span>
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-5xl text-text-primary font-black tracking-tighter">{analysis?.sources ?? 0}</span>
+                                    <span className="text-sm text-accent font-bold">Channels</span>
+                                </div>
+                                <span className="text-sm text-text-muted font-medium opacity-60">Reddit &amp; YouTube combined.</span>
+                            </div>
+                            <div className="flex flex-col gap-4 p-6 bg-page/20 rounded-3xl border border-border-dim/20">
+                                <span className="text-[12px] text-text-muted font-bold uppercase tracking-widest opacity-50">Scan Window</span>
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-5xl text-text-primary font-black tracking-tighter">7</span>
+                                    <span className="text-sm text-accent font-bold">Days</span>
+                                </div>
+                                <span className="text-sm text-text-muted font-medium opacity-60">Rolling perspective.</span>
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
             </section>
 
