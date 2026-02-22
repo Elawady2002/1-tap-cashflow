@@ -82,18 +82,24 @@ export async function classifyActivity(keyword: string, sampleData: string): Pro
 
 export async function generateReplies(posts: any[], affiliateLink: string): Promise<any[]> {
     const postsJson = JSON.stringify(posts.map(p => ({ id: p.id, text: p.text })));
-    const prompt = `For each of these posts, generate 3 distinct natural, human responses.
+    const prompt = `For each of these posts, generate 3 distinct natural, human-sounding responses that a real user would type.
     Affiliate/Target Link: ${affiliateLink}
     
-    Styles:
-    1. Short: Casual, direct.
-    2. Medium: Helpful, detailed.
-    3. Curiosity: Hook-based.
+    CRITICAL INSTRUCTIONS:
+    - Return ONLY the reply text. 
+    - DO NOT include prefixes like "Short:", "Medium:", "Curiosity:", or "Variant:".
+    - The responses must be conversational and contextual to the original post.
+    - If a link is provided, weave it in naturally where it adds value.
     
-    Posts:
+    Styles for the 3 results:
+    1. A casual, short direct acknowledgement.
+    2. A helpful, detailed insight or personal-sounding story.
+    3. A curiosity-based question or hook that starts a conversation.
+    
+    Posts to analyze:
     ${postsJson}
     
-    Return ONLY a JSON array of objects: [{"id": "post_id", "text": "original_text", "replies": ["Short...", "Medium...", "Curiosity..."]}]`;
+    Return ONLY a JSON array of objects: [{"id": "post_id", "text": "original_text", "replies": ["Direct reply text here", "Detailed reply text here", "Hook reply text here"]}]`;
 
     const result = await callChatGPT([{ role: "user", content: prompt }]);
     try {
