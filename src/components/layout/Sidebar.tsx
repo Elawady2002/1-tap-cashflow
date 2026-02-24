@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { LayoutGrid, Radar, Activity, Trophy, MessageSquare, ShieldCheck, LogOut, ChevronRight, GraduationCap, Briefcase, Zap, Cpu, Target } from "lucide-react";
+import { LayoutGrid, Radar, Activity, Trophy, MessageSquare, ShieldCheck, LogOut, ChevronRight, GraduationCap, Target, Sparkles, Rocket, Scan } from "lucide-react";
 import { useSearch } from "@/context/SearchContext";
 import { clsx } from "clsx";
 import { motion } from "framer-motion";
@@ -17,9 +17,9 @@ const STEPS = [
 ];
 
 const UPGRADES = [
-    { path: "/dfy", label: "Done-For-You", icon: Briefcase },
-    { path: "/instant", label: "Instant Income", icon: Zap },
-    { path: "/autopilot", label: "Autopilot", icon: Cpu },
+    { path: "/dfy", label: "DFY Vault", icon: Scan },
+    { path: "/instant", label: "Instant Income", icon: Sparkles },
+    { path: "/autopilot", label: "Automated Income", icon: Rocket },
 ];
 
 export function Sidebar() {
@@ -53,7 +53,7 @@ export function Sidebar() {
 
                 {/* Command Navigation */}
                 <nav className="flex flex-col gap-2 w-full flex-1 overflow-y-auto no-scrollbar pb-10">
-                    <div className="flex flex-col gap-2 mb-10">
+                    <div className="flex flex-col gap-2 mb-6">
                         <span className="text-[10px] font-black tracking-[0.3em] text-[#475569] uppercase px-5 mb-2">Core Hub</span>
                         {STEPS.map((step, index) => {
                             const isActive = pathname === step.path;
@@ -78,30 +78,36 @@ export function Sidebar() {
                         })}
                     </div>
 
-                    <div className="flex flex-col gap-1">
-                        <span className="text-[10px] font-bold tracking-widest text-[#475569] uppercase px-5 mb-2">Premium Tools</span>
-                        {UPGRADES.map((step, index) => {
-                            const isActive = pathname === step.path;
-                            const Icon = step.icon;
+                    <div className="flex flex-col mx-2 mt-2">
+                        <div className="bg-[#0A0A0B] border border-accent/20 rounded-[14px] p-4 flex flex-col gap-3 shadow-[0_4px_20px_rgba(0,0,0,0.2)]">
+                            <div className="flex items-center gap-2 mb-1 px-1">
+                                <Sparkles className="text-accent" size={16} strokeWidth={2} />
+                                <span className="text-[11px] font-bold tracking-[0.15em] text-accent uppercase">Premium Features</span>
+                            </div>
 
-                            return (
-                                <Link
-                                    key={step.path}
-                                    href={step.path}
-                                    className={clsx(
-                                        "command-nav-link group py-4 transition-all duration-300 whitespace-nowrap",
-                                        isActive ? "text-accent bg-accent/5" : "text-text-muted hover:bg-accent/5"
-                                    )}
-                                >
-                                    <div className="flex items-center gap-4">
-                                        <Icon size={18} className={clsx(isActive ? "text-accent" : "text-text-muted group-hover:text-accent")} />
-                                        <span className={clsx("brand-font tracking-wide text-sm transition-colors font-medium", isActive ? "text-accent" : "group-hover:text-accent")}>{step.label}</span>
-                                    </div>
-                                    {isActive && <ChevronRight size={14} className="text-accent ml-auto" />}
-                                </Link>
-                            );
-                        })}
+                            {UPGRADES.map((step, index) => {
+                                const isActive = pathname === step.path;
+                                const Icon = step.icon;
+
+                                return (
+                                    <Link
+                                        key={step.path}
+                                        href={step.path}
+                                        className={clsx(
+                                            "flex items-center justify-center gap-3 py-3.5 rounded-full transition-all duration-300 border",
+                                            isActive
+                                                ? "bg-accent/10 border-accent/40 text-accent"
+                                                : "bg-[#111111] border-white/5 text-text-muted hover:border-white/10 hover:text-white"
+                                        )}
+                                    >
+                                        <Icon size={16} strokeWidth={1.5} className={clsx(isActive ? "text-accent" : "")} />
+                                        <span className="text-[14px] font-medium tracking-wide">{step.label}</span>
+                                    </Link>
+                                );
+                            })}
+                        </div>
                     </div>
+
                     <div className="flex flex-col gap-2 mt-auto pt-10">
                         <button
                             onClick={resetSession}
