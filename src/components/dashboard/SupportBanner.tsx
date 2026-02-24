@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Headphones, ExternalLink } from "lucide-react";
+import { Headphones } from "lucide-react";
 
 export function SupportBanner() {
     return (
@@ -9,23 +9,22 @@ export function SupportBanner() {
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="card-base flex flex-col md:flex-row items-center justify-between gap-8 p-8 md:p-10 border-white/5 bg-[#0A0A0B]/40 hover:bg-[#0A0A0B]/60 transition-all duration-500 group"
+            className="flex flex-col md:flex-row items-center justify-between gap-6 px-6 py-4 rounded-[14px] border border-white/5 bg-[#090b0f] transition-all duration-300 w-full mt-8 shrink-0"
         >
-            <div className="flex items-center gap-8">
-                <div className="w-16 h-16 rounded-full bg-accent/5 border border-accent/20 flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(234,179,8,0.05)] group-hover:shadow-[0_0_30px_rgba(234,179,8,0.15)] transition-all duration-500">
-                    <Headphones size={28} className="text-accent" />
+            <div className="flex items-center gap-5">
+                <div className="w-[52px] h-[52px] rounded-full flex items-center justify-center shrink-0 border border-[#00e5ff]/30 bg-[#00e5ff]/5">
+                    <Headphones size={24} strokeWidth={1.5} className="text-[#00e5ff]" />
                 </div>
-                <div className="flex flex-col gap-2">
-                    <h3 className="text-xl font-bold text-text-primary tracking-tight">Need specific guidance?</h3>
-                    <p className="text-text-secondary text-sm md:text-base leading-relaxed max-w-xl">
-                        Our tactical documentation library covers every feature in detail. Read the official <span className="text-accent font-medium">1-Tap Cashflow playbook</span>.
+                <div className="flex flex-col gap-0.5">
+                    <h3 className="text-[17px] font-bold text-white tracking-tight">Need Help?</h3>
+                    <p className="text-[#848795] text-[14px]">
+                        Our support team is here to assist you 24/7
                     </p>
                 </div>
             </div>
 
-            <button className="btn-secondary h-12 px-8 whitespace-nowrap bg-white/2 border-white/10 hover:bg-white/5 transition-all duration-300">
-                <span>Access Documentation</span>
-                <ExternalLink size={16} className="text-text-muted" />
+            <button className="bg-[#00e5ff] hover:bg-[#00cfec] transition-colors rounded-full h-[42px] px-7 whitespace-nowrap text-black font-bold text-[14px]">
+                Contact Support
             </button>
         </motion.div>
     );

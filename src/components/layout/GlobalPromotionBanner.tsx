@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, ArrowRight, PlayCircle } from 'lucide-react';
+import { Smartphone } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export function GlobalPromotionBanner() {
@@ -9,39 +9,43 @@ export function GlobalPromotionBanner() {
             animate={{ opacity: 1, y: 0 }}
             className="w-full sticky top-0 z-50 pt-4 pb-4 -mt-4 bg-[#080808]/80 backdrop-blur-md group mb-6"
         >
-            {/* Main Banner Container */}
-            <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-[#0A0A0B]/80 backdrop-blur-xl p-5 md:p-6 transition-all duration-500 hover:border-accent/30 group-hover:shadow-[0_0_30px_rgba(234,179,8,0.1)]">
-                {/* Animated Glow Elements */}
-                <div className="absolute top-0 right-0 w-1/2 h-full bg-linear-to-l from-accent/10 to-transparent pointer-events-none opacity-50" />
-                <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-accent/20 rounded-full blur-[80px] pointer-events-none opacity-30 group-hover:opacity-50 transition-opacity duration-700" />
-
-                <div className="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
-                    <div className="flex items-center gap-5">
-                        <div className="hidden sm:flex w-14 h-14 shrink-0 items-center justify-center bg-accent/10 border border-accent/20 rounded-xl shadow-[0_0_15px_rgba(234,179,8,0.1)]">
-                            <PlayCircle size={28} className="text-accent" />
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                            <div className="flex items-center gap-2">
-                                <span className="text-[10px] font-bold text-accent uppercase tracking-widest bg-accent/5 px-2 py-0.5 rounded border border-accent/10">Exclusive Training</span>
-                                <Sparkles size={12} className="text-accent animate-pulse" />
-                            </div>
-                            <h2 className="text-lg sm:text-xl font-bold text-text-primary tracking-tight">
-                                Scale your earnings to <span className="text-accent">$1,000 - $5,000</span> a day
-                            </h2>
-                            <p className="text-text-muted text-xs sm:text-sm max-w-2xl">
-                                Join our free advanced training session and learn the high-scale strategies used by our top 1% members.
-                            </p>
+            <div className="relative overflow-hidden rounded-xl bg-[#0cbda0] p-6 lg:p-7 shadow-lg">
+                <div className="flex flex-col md:flex-row items-start md:items-center gap-6 relative z-10 w-full max-w-5xl">
+                    {/* Icon section */}
+                    <div className="hidden md:flex relative shrink-0">
+                        <Smartphone size={56} className="text-white" strokeWidth={1.5} />
+                        <div className="absolute -right-2 top-2 bg-[#0cbda0] rounded-full p-0.5">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="#FFBA00" stroke="#FFBA00" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 8v8" stroke="black" fill="none"></path>
+                                <path d="M14.5 9.5a2.5 2.5 0 0 0-5 0c0 4 5 1 5 5a2.5 2.5 0 0 1-5 0" stroke="black" fill="none"></path>
+                            </svg>
                         </div>
                     </div>
 
-                    <button
-                        onClick={() => window.open("https://freedomescapexcelerator.com/5k-per-day", "_blank")}
-                        className="btn-primary whitespace-nowrap px-8 h-12 shadow-gold group/btn"
-                    >
-                        <span>Watch Training Now</span>
-                        <ArrowRight size={18} className="transition-transform group-hover/btn:translate-x-1" />
-                    </button>
+                    {/* Text content */}
+                    <div className="flex flex-col gap-3 flex-1">
+                        <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                            Want To Multiply Your Earnings To $1,000 - $5,000 A Day?
+                        </h2>
+                        <div className="text-white/95 text-[15px] space-y-1.5 leading-relaxed font-medium">
+                            <p>
+                                1-Tap Cashflow is powerful, but if you want to scale to truly life-changing income, you need to watch this training which shows how to automate your entire workflow. And guess what?
+                            </p>
+                            <p>
+                                This training is free for all 1-Tap Cashflow members. So, if you want to unlock your full potential, just tap the yellow button below.
+                            </p>
+                        </div>
+
+                        <div className="mt-2">
+                            <button
+                                onClick={() => window.open("https://freedomescapexcelerator.com/5k-per-day", "_blank")}
+                                className="bg-[#FFBA00] hover:bg-[#e6a800] transition-colors text-black font-bold whitespace-nowrap px-6 py-2.5 rounded-md shadow-sm text-sm sm:text-[15px]"
+                            >
+                                Click Here To Learn How
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </motion.div>
