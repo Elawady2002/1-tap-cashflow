@@ -7,7 +7,7 @@ export function GlobalPromotionBanner() {
         <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="w-full sticky top-0 z-50 pt-4 pb-4 -mt-4 bg-[#080808]/80 backdrop-blur-md group mb-6"
+            className="w-full pt-4 pb-4 -mt-4 group mb-6"
         >
             <div className="relative overflow-hidden rounded-xl bg-[#0cbda0] p-6 lg:p-7 shadow-lg">
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-6 relative z-10 w-full max-w-5xl">
